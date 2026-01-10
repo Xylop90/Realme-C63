@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "last_updated": "2026-01-10",
+  "note": "SHA256 hashes are placeholders and should be verified during actual downloads",
+  "drivers": {
+    "spd_usb_driver": {
+      "name": "SPD/Unisoc USB Driver",
+      "version": "latest",
+      "file_name": "SPD_USB_Driver.exe",
+      "download_url": "https://tech-latest.com/download-latest-spd-drivers-spreadtrum-windows/",
+      "file_size_mb": 15,
+      "sha256": "PLACEHOLDER_HASH_TO_BE_CALCULATED_ON_DOWNLOAD",
+      "verify_on_download": true,
+      "description": "USB drivers for Spreadtrum/Unisoc chipset devices"
+    },
+    "realme_usb_driver": {
+      "name": "Realme Universal USB Driver",
+      "version": "latest",
+      "file_name": "Realme_USB_Driver.exe",
+      "download_url": "https://gsmxr.com/oppo-oneplus-realme-latest-driver-setup/",
+      "alternate_urls": [
+        "https://www.mobileguru4.com/download-realme-usb-driver/",
+        "https://www.getdroidtips.com/realme-usb-drivers/"
+      ],
+      "file_size_mb": 20,
+      "sha256": "PLACEHOLDER_HASH_TO_BE_CALCULATED_ON_DOWNLOAD",
+      "verify_on_download": true,
+      "description": "Universal USB drivers for Realme, OPPO, and OnePlus devices"
+    }
+  },
+  "tools": {
+    "platform_tools": {
+      "name": "Android Platform Tools (ADB/Fastboot)",
+      "version": "35.0.1",
+      "file_name": "platform-tools-latest-windows.zip",
+      "download_url": "https://dl.google.com/android/repository/platform-tools-latest-windows.zip",
+      "file_size_mb": 8,
+      "sha256": "AUTO_CALCULATE_FROM_GOOGLE",
+      "verify_on_download": true,
+      "description": "Official Google ADB and Fastboot tools"
+    },
+    "magisk": {
+      "name": "Magisk",
+      "version": "30.6",
+      "file_name": "Magisk-v30.6.apk",
+      "download_url": "https://github.com/topjohnwu/Magisk/releases/download/v30.6/Magisk-v30.6.apk",
+      "file_size_mb": 12,
+      "sha256": "AUTO_CALCULATE_FROM_GITHUB",
+      "verify_on_download": true,
+      "description": "Magisk root solution v30.6"
+    },
+    "spd_flash_tool": {
+      "name": "SPD Flash Tool",
+      "version": "R27.24.2301",
+      "file_name": "SPD_Flash_Tool_R27.24.2301.zip",
+      "download_url": "https://spdflashtool.com/download/spd-flash-tool-r27-24-2301",
+      "file_size_mb": 45,
+      "sha256": "PLACEHOLDER_HASH_TO_BE_CALCULATED_ON_DOWNLOAD",
+      "verify_on_download": true,
+      "description": "Spreadtrum Flash Tool for flashing firmware"
+    },
+    "spd_research_tool": {
+      "name": "SPD Research Tool",
+      "version": "R4.0.0001",
+      "file_name": "SPD_Research_Tool_R4.0.0001.zip",
+      "download_url": "https://spdflashtool.com/research-tool/spd-research-tool-r4-0-0001",
+      "file_size_mb": 35,
+      "sha256": "PLACEHOLDER_HASH_TO_BE_CALCULATED_ON_DOWNLOAD",
+      "verify_on_download": true,
+      "password": "SFT123",
+      "description": "SPD Research Tool for development"
+    },
+    "python_embedded": {
+      "name": "Python 3.11.8 Embedded",
+      "version": "3.11.8",
+      "file_name": "python-3.11.8-embed-amd64.zip",
+      "download_url": "https://www.python.org/ftp/python/3.11.8/python-3.11.8-embed-amd64.zip",
+      "file_size_mb": 10,
+      "sha256": "AUTO_CALCULATE_FROM_PYTHON_ORG",
+      "verify_on_download": true,
+      "description": "Python 3.11.8 embedded distribution for Windows"
+    }
+  },
+  "firmware": {
+    "rmx3939_latest": {
+      "name": "RMX3939 Firmware Latest",
+      "version": "RMX3939export_14_A.77_2025050920403600",
+      "file_name": "RMX3939export_14_A.77.zip",
+      "download_sources": [
+        "https://www.getdroidtips.com/realme-c63-firmware/",
+        "https://gsmmafia.com/realme-c63-rmx3939-flash-file/",
+        "https://realmefirmware.com/realme-c63-4g-firmware/"
+      ],
+      "file_size_mb": 3200,
+      "sha256": "PLACEHOLDER_HASH_TO_BE_CALCULATED_ON_DOWNLOAD",
+      "verify_on_download": true,
+      "description": "Latest stock firmware for Realme C63 (RMX3939)"
+    }
+  },
+  "security_policy": {
+    "always_verify": true,
+    "https_only": true,
+    "fail_on_mismatch": true,
+    "auto_calculate": {
+      "enabled": true,
+      "algorithm": "sha256",
+      "update_config": false
+    }
+  },
+  "verification_settings": {
+    "timeout_seconds": 300,
+    "retry_count": 3,
+    "buffer_size_kb": 4096,
+    "log_verification": true
+  }
+}

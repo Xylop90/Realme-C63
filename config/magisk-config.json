@@ -1,0 +1,178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "last_updated": "2026-01-10",
+  "magisk": {
+    "current_version": "30.6",
+    "stable_version": "30.6",
+    "beta_version": "30.6",
+    "canary_version": "latest",
+    "download_sources": {
+      "github_releases": "https://github.com/topjohnwu/Magisk/releases",
+      "direct_apk": "https://github.com/topjohnwu/Magisk/releases/download/v30.6/Magisk-v30.6.apk",
+      "direct_app": "https://github.com/topjohnwu/Magisk/releases/download/v30.6/Magisk-v30.6.apk",
+      "alternative": "https://magiskzip.com/"
+    },
+    "documentation": "https://topjohnwu.github.io/Magisk/install.html"
+  },
+  "installation": {
+    "method": "patch_boot",
+    "steps": [
+      {
+        "step": 1,
+        "action": "download_firmware",
+        "description": "Download stock firmware for RMX3939"
+      },
+      {
+        "step": 2,
+        "action": "extract_boot",
+        "description": "Extract boot.img from firmware",
+        "files_needed": ["boot.img"]
+      },
+      {
+        "step": 3,
+        "action": "install_magisk_app",
+        "description": "Install Magisk APK on device",
+        "command": "adb install Magisk-v30.6.apk"
+      },
+      {
+        "step": 4,
+        "action": "push_boot",
+        "description": "Push boot.img to device",
+        "command": "adb push boot.img /sdcard/"
+      },
+      {
+        "step": 5,
+        "action": "patch_boot",
+        "description": "Patch boot.img using Magisk app (manual step)",
+        "instructions": [
+          "Open Magisk app on device",
+          "Tap 'Install' next to Magisk",
+          "Select 'Select and Patch a File'",
+          "Choose boot.img from /sdcard/",
+          "Wait for patching to complete"
+        ]
+      },
+      {
+        "step": 6,
+        "action": "pull_patched",
+        "description": "Pull patched boot image from device",
+        "command": "adb pull /sdcard/Download/magisk_patched_*.img"
+      },
+      {
+        "step": 7,
+        "action": "reboot_bootloader",
+        "description": "Reboot device to bootloader",
+        "command": "adb reboot bootloader"
+      },
+      {
+        "step": 8,
+        "action": "flash_patched",
+        "description": "Flash patched boot image",
+        "command": "fastboot flash boot magisk_patched.img"
+      },
+      {
+        "step": 9,
+        "action": "reboot_system",
+        "description": "Reboot to system",
+        "command": "fastboot reboot"
+      },
+      {
+        "step": 10,
+        "action": "verify_root",
+        "description": "Verify root access",
+        "wait_seconds": 30,
+        "command": "adb shell su -c id"
+      }
+    ]
+  },
+  "modules": {
+    "recommended": [
+      {
+        "name": "Magisk Hide",
+        "description": "Hide root from banking apps",
+        "repo": "topjohnwu/Magisk",
+        "built_in": true
+      },
+      {
+        "name": "LSPosed",
+        "description": "Xposed framework for Android",
+        "repo": "LSPosed/LSPosed",
+        "url": "https://github.com/LSPosed/LSPosed/releases"
+      },
+      {
+        "name": "Universal SafetyNet Fix",
+        "description": "Fix SafetyNet attestation",
+        "repo": "kdrag0n/safetynet-fix",
+        "url": "https://github.com/kdrag0n/safetynet-fix/releases"
+      }
+    ],
+    "optional": [
+      {
+        "name": "Busybox",
+        "description": "Essential UNIX tools",
+        "repo": "topjohnwu/magisk-module-installer"
+      },
+      {
+        "name": "Viper4Android FX",
+        "description": "Audio enhancement",
+        "repo": "viper4android-fx"
+      }
+    ]
+  },
+  "verification": {
+    "methods": [
+      {
+        "type": "adb_shell",
+        "command": "adb shell su -c id",
+        "expected_output": "uid=0(root)"
+      },
+      {
+        "type": "magisk_app",
+        "description": "Check Magisk app shows installed"
+      },
+      {
+        "type": "root_checker",
+        "description": "Use Root Checker app from Play Store"
+      }
+    ]
+  },
+  "troubleshooting": {
+    "boot_loop": {
+      "description": "Device stuck in boot loop after flashing",
+      "solution": [
+        "Reboot to bootloader",
+        "Flash original stock boot.img",
+        "Try patching boot.img again"
+      ]
+    },
+    "magisk_not_installed": {
+      "description": "Magisk app shows not installed",
+      "solution": [
+        "Ensure bootloader is unlocked",
+        "Verify patched boot.img was flashed correctly",
+        "Try re-flashing patched boot.img"
+      ]
+    },
+    "root_not_working": {
+      "description": "Root access not granted",
+      "solution": [
+        "Open Magisk app",
+        "Grant superuser permissions",
+        "Reboot device"
+      ]
+    }
+  },
+  "guides": [
+    "https://topjohnwu.github.io/Magisk/install.html",
+    "https://xdaforums.com/t/root-any-realme-phone-without-twrp.4544763/",
+    "https://www.rootingsteps.com/root-any-realme-phone/",
+    "https://citizenside.com/technology/rooting-your-realme-device-step-by-step-guide/"
+  ],
+  "warnings": {
+    "backup": "ALWAYS create a full backup before rooting",
+    "warranty": "Rooting WILL void your warranty",
+    "security": "Root access can compromise device security if misused",
+    "updates": "OTA updates may fail on rooted devices"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "last_updated": "2026-01-10",
+  "tools": {
+    "adb": {
+      "name": "Android Platform Tools",
+      "current_version": "35.0.1",
+      "download_url": "https://dl.google.com/android/repository/platform-tools-latest-windows.zip",
+      "required": true,
+      "auto_update": true,
+      "verification": {
+        "sha256": "auto",
+        "verify_signature": false
+      }
+    },
+    "magisk": {
+      "name": "Magisk",
+      "current_version": "30.6",
+      "download_url": "https://github.com/topjohnwu/Magisk/releases/download/v30.6/Magisk-v30.6.apk",
+      "github_repo": "topjohnwu/Magisk",
+      "required": true,
+      "auto_update": true,
+      "verification": {
+        "sha256": "auto",
+        "verify_signature": true
+      }
+    },
+    "spd_flash_tool": {
+      "name": "SPD Flash Tool",
+      "current_version": "R27.24.2301",
+      "download_url": "https://spdflashtool.com/download/spd-flash-tool-r27-24-2301",
+      "required": true,
+      "auto_update": false,
+      "verification": {
+        "sha256": "auto",
+        "verify_signature": false
+      }
+    },
+    "spd_research_tool": {
+      "name": "SPD Research Tool",
+      "current_version": "R4.0.0001",
+      "download_url": "https://spdflashtool.com/research-tool/spd-research-tool-r4-0-0001",
+      "required": false,
+      "auto_update": false,
+      "password": "SFT123",
+      "verification": {
+        "sha256": "auto",
+        "verify_signature": false
+      }
+    },
+    "python": {
+      "name": "Python Embedded",
+      "current_version": "3.11.8",
+      "download_url": "https://www.python.org/ftp/python/3.11.8/python-3.11.8-embed-amd64.zip",
+      "required": true,
+      "auto_update": false,
+      "verification": {
+        "sha256": "auto",
+        "verify_signature": false
+      }
+    },
+    "unisoc_unlock": {
+      "name": "Unisoc Unlock Tool",
+      "current_version": "latest",
+      "download_url": "https://github.com/patrislav1/unisoc-unlock",
+      "pypi_package": "unisoc-unlock",
+      "github_repo": "patrislav1/unisoc-unlock",
+      "required": true,
+      "auto_update": true,
+      "install_method": "pip",
+      "verification": {
+        "sha256": "auto",
+        "verify_signature": false
+      }
+    },
+    "spd_drivers": {
+      "name": "SPD/Unisoc USB Drivers",
+      "current_version": "latest",
+      "download_url": "https://tech-latest.com/download-latest-spd-drivers-spreadtrum-windows/",
+      "required": true,
+      "auto_update": false,
+      "silent_install": true,
+      "verification": {
+        "sha256": "auto",
+        "verify_signature": true
+      }
+    },
+    "realme_drivers": {
+      "name": "Realme Universal USB Drivers",
+      "current_version": "latest",
+      "download_url": "https://gsmxr.com/oppo-oneplus-realme-latest-driver-setup/",
+      "alternate_urls": [
+        "https://www.mobileguru4.com/download-realme-usb-driver/",
+        "https://www.getdroidtips.com/realme-usb-drivers/",
+        "https://www.droidthunder.com/download-realme-usb-drivers/"
+      ],
+      "required": true,
+      "auto_update": false,
+      "silent_install": true,
+      "verification": {
+        "sha256": "auto",
+        "verify_signature": true
+      }
+    }
+  },
+  "update_channels": {
+    "stable": {
+      "check_interval_hours": 24,
+      "auto_download": false,
+      "notification": true
+    },
+    "beta": {
+      "check_interval_hours": 12,
+      "auto_download": false,
+      "notification": true
+    }
+  }
+}
