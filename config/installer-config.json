@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "name": "Realme C63 Ultimate Auto-Installer",
+  "device": {
+    "model": "RMX3939",
+    "name": "Realme C63",
+    "chipset": "Unisoc UMS512",
+    "architecture": "arm64"
+  },
+  "features": {
+    "bootloader_unlock": true,
+    "root_device": true,
+    "install_twrp": false,
+    "auto_updates": true,
+    "telemetry": false,
+    "offline_mode": false,
+    "self_learning": true
+  },
+  "unlock_methods": {
+    "preferred": "unisoc_python",
+    "fallback": ["cve_exploit", "official_app"]
+  },
+  "installation": {
+    "create_desktop_shortcut": true,
+    "check_updates_on_start": true,
+    "auto_download_dependencies": true,
+    "verify_checksums": true,
+    "create_backups": true,
+    "skip_completed_steps": true
+  },
+  "security": {
+    "https_only": true,
+    "verify_signatures": true,
+    "sandbox_mode": false
+  },
+  "ui": {
+    "language": "de",
+    "color_scheme": "cyan",
+    "show_progress_bars": true,
+    "show_ascii_art": true,
+    "verbose_logging": true
+  },
+  "thresholds": {
+    "max_retries": 3,
+    "connection_timeout_seconds": 30,
+    "download_timeout_minutes": 30,
+    "adb_wait_timeout_seconds": 60
+  }
+}
