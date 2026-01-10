@@ -24,7 +24,9 @@
 
 #### Realme USB Driver
 - **Official:** https://www.realme.com/support/software-update
+- **Direct Download:** https://download.c.realme.com/flash/realme_usb_driver.zip
 - **Alternative:** Available in Realme Flash Tool
+- **Automated Script:** Use `scripts/install-realme-drivers.ps1` (Windows only)
 
 #### OPPO USB Driver
 - **URL:** https://www.oppo.com/en/support/
