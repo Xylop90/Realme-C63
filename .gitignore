@@ -1,0 +1,68 @@
+# Windows Installation Artifacts
+work/
+*.log
+*.tmp
+
+# Downloaded Tools and Drivers
+downloads/
+spd-flash-tool/
+spd-drivers/
+realme-drivers/
+adb-tools/
+firmware/
+*.pac
+*.zip
+*.rar
+*.7z
+
+# Windows specific
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Log files
+logs/
+*.log
+
+# Temp directories
+temp/
+tmp/
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# PowerShell
+*.ps1~
+
+# Build artifacts
+dist/
+build/
+*.exe
+*.msi
+*.dll
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Test files
+test_*/
+testing/
+
+# User-specific files
+user_config.json
+local_settings.json
+
+# Credentials (should never be committed)
+*.key
+*.pem
+*.crt
+credentials.json
+secrets.json

@@ -1,0 +1,192 @@
+{
+  "_comment": "Konfigurationsdatei für Realme C63 (RMX3939) Installation",
+  "_version": "1.0.0",
+  "_last_updated": "2026-01-10",
+  
+  "_instructions": {
+    "de": "Diese Datei enthält alle Download-URLs und Hashes für die automatische Installation. WICHTIG: Realme C63 verwendet Unisoc/Spreadtrum Chipset, NICHT Qualcomm/MTK!",
+    "firmware_note": "Firmware muss manuell heruntergeladen werden. Wählen Sie eine der unten aufgeführten Quellen und laden Sie die Firmware für RMX3939 herunter.",
+    "hash_note": "SHA256 Hashes werden zur Überprüfung der Downloads verwendet. PLACEHOLDER bedeutet, dass kein Hash verfügbar ist.",
+    "how_to_get_hash": "Um einen SHA256 Hash zu berechnen, verwenden Sie: Get-FileHash -Algorithm SHA256 <datei> | Select-Object Hash"
+  },
+  
+  "tools": {
+    "spd_flash_tool": {
+      "name": "SPD Flash Tool (Research Download)",
+      "version": "R27.24.2301",
+      "url": "https://spdflashtool.com/download/spd-flash-tool-r27-24-2301",
+      "sha256": "PLACEHOLDER",
+      "description": "SPD Flash Tool für Spreadtrum/Unisoc Chipsets. Dies ist das Haupt-Tool zum Flashen der Firmware auf Realme C63.",
+      "note": "GUI-basiert, keine vollständige CLI-Automatisierung möglich",
+      "alternative_urls": [
+        "https://androidmtk.com/download-spd-flash-tool",
+        "https://www.gsmhelpful.com/2019/10/spd-flash-tool-latest-version-free.html"
+      ]
+    },
+    
+    "adb_platform_tools": {
+      "name": "Android Platform Tools (ADB)",
+      "version": "latest",
+      "url": "https://dl.google.com/android/repository/platform-tools-latest-windows.zip",
+      "sha256": "PLACEHOLDER",
+      "description": "Optional: Android Debug Bridge für Debugging und erweiterte Geräteverwaltung",
+      "note": "Von Google bereitgestellt, immer aktuellste Version"
+    }
+  },
+  
+  "drivers": {
+    "spd_usb": {
+      "name": "SPD/Spreadtrum/Unisoc USB Drivers",
+      "version": "latest",
+      "url": "https://tech-latest.com/download-latest-spd-drivers-spreadtrum-windows/",
+      "sha256": "PLACEHOLDER",
+      "description": "Erforderliche USB-Treiber für Spreadtrum/Unisoc Geräte (CDC/VCOM Treiber)",
+      "note": "Diese Treiber sind ESSENTIELL für die Kommunikation mit dem Gerät im Download-Modus",
+      "alternative_urls": [
+        "https://androidmtk.com/download-spreadtrum-usb-drivers",
+        "https://www.gsmhelpful.com/2019/10/spreadtrum-usb-drivers-latest-version.html"
+      ],
+      "installation_note": "Möglicherweise ist eine manuelle Installation über Device Manager erforderlich"
+    },
+    
+    "realme_universal": {
+      "name": "Realme Universal USB Driver",
+      "version": "latest",
+      "url": "https://gsmxr.com/oppo-oneplus-realme-latest-driver-setup/",
+      "sha256": "PLACEHOLDER",
+      "description": "Universal USB-Treiber für Realme, OPPO und OnePlus Geräte",
+      "note": "Wird für ADB-Verbindung und allgemeine USB-Kommunikation benötigt",
+      "alternative_urls": [
+        "https://www.realme.com/support/software-update",
+        "https://androidmtk.com/download-realme-usb-drivers"
+      ]
+    }
+  },
+  
+  "firmware": {
+    "device": "Realme C63",
+    "model": "RMX3939",
+    "chipset": "Unisoc/Spreadtrum",
+    "format": ".PAC oder .ZIP",
+    "min_size_mb": 500,
+    
+    "_important_notes": {
+      "model_verification": "Überprüfen Sie Ihre Modellnummer mit dem Code: *#899# auf Ihrem Gerät",
+      "region_note": "Stellen Sie sicher, dass Sie die Firmware für Ihre Region herunterladen",
+      "version_note": "Laden Sie die neueste verfügbare stabile Version herunter",
+      "backup_warning": "ERSTELLEN SIE EIN BACKUP VOR DEM FLASHEN! Alle Daten werden gelöscht!",
+      "warranty_warning": "Das Flashen kann die Herstellergarantie ungültig machen",
+      "widevine_warning": "Nach dem Flashen funktioniert HD-Streaming möglicherweise nur in SD (Widevine L3)"
+    },
+    
+    "sources": [
+      {
+        "name": "GetDroidTips",
+        "url": "https://www.getdroidtips.com/realme-c63-firmware/",
+        "note": "Beliebte Quelle mit detaillierten Anleitungen",
+        "requires_registration": false,
+        "quality": "high",
+        "update_frequency": "regular"
+      },
+      {
+        "name": "GSMMAFIA",
+        "url": "https://gsmmafia.com/realme-c63-rmx3939-flash-file/",
+        "note": "Vertrauenswürdige Firmware-Quelle",
+        "requires_registration": false,
+        "quality": "high",
+        "update_frequency": "regular"
+      },
+      {
+        "name": "RealmeFirmware",
+        "url": "https://realmefirmware.com/realme-c63-4g-firmware/",
+        "note": "Spezialisiert auf Realme Firmware",
+        "requires_registration": false,
+        "quality": "high",
+        "update_frequency": "frequent"
+      },
+      {
+        "name": "ROMProvider",
+        "url": "https://romprovider.com/realme-c63-rmx3939-flash-file-stock-rom/",
+        "note": "Stock ROM Anbieter",
+        "requires_registration": false,
+        "quality": "medium",
+        "update_frequency": "occasional"
+      },
+      {
+        "name": "Filewale",
+        "url": "https://filewale.com/files/realme-c63-rmx3939export-14-a77-2025050920403600-project-id-24666-24667-24668zip/34003",
+        "note": "Direkte Firmware-Downloads",
+        "requires_registration": true,
+        "quality": "medium",
+        "update_frequency": "occasional",
+        "additional_info": "Möglicherweise ist eine Registrierung erforderlich"
+      }
+    ],
+    
+    "firmware_files": {
+      "_instruction": "Nach dem Download der Firmware, legen Sie die Datei hier ab:",
+      "target_directory": "%TEMP%\\Realme-C63-Installation\\firmware\\",
+      "accepted_formats": [".pac", ".zip"],
+      "user_firmware": {
+        "path": "BENUTZERDEFINIERT",
+        "sha256": "PLACEHOLDER",
+        "note": "Berechnen Sie den SHA256 Hash und tragen Sie ihn hier ein, um automatische Überprüfung zu aktivieren"
+      }
+    }
+  },
+  
+  "system_requirements": {
+    "os": "Windows 11 (oder Windows 10 Build 19041+)",
+    "ram": "4 GB minimum, 8 GB empfohlen",
+    "storage": "10 GB freier Speicher",
+    "usb": "USB 2.0 oder höher",
+    "admin": true,
+    "dotnet": "Optional: .NET Framework 4.5+ für einige Tools"
+  },
+  
+  "device_requirements": {
+    "model": "Realme C63 (RMX3939)",
+    "battery": "Mindestens 70% geladen",
+    "usb_debugging": "Aktiviert (für ADB)",
+    "oem_unlock": "Aktiviert (in Entwickleroptionen)",
+    "bootloader": "Entsperrt (optional, abhängig von Firmware)",
+    "backup": "Vollständiges Backup aller Daten DRINGEND empfohlen"
+  },
+  
+  "troubleshooting": {
+    "common_issues": {
+      "driver_not_found": "Installieren Sie Treiber manuell über Device Manager",
+      "device_not_detected": "Versuchen Sie einen anderen USB-Port oder ein anderes Kabel",
+      "download_failed": "Überprüfen Sie Ihre Internetverbindung und Firewall-Einstellungen",
+      "flash_failed": "Stellen Sie sicher, dass die richtige Firmware für RMX3939 verwendet wird",
+      "bootloop": "Versuchen Sie, die Firmware erneut zu flashen oder eine andere Version zu verwenden"
+    },
+    "documentation": {
+      "troubleshooting_guide": "docs/TROUBLESHOOTING.md",
+      "firmware_guide": "docs/FIRMWARE-GUIDE.md",
+      "main_readme": "README.md"
+    }
+  },
+  
+  "links": {
+    "official": {
+      "realme_support": "https://www.realme.com/support",
+      "realme_community": "https://c.realme.com/"
+    },
+    "tools": {
+      "spd_flash_tool_official": "https://spdflashtool.com/",
+      "android_platform_tools": "https://developer.android.com/tools/releases/platform-tools"
+    },
+    "communities": {
+      "xda_developers": "https://xda-developers.com/",
+      "telegram": "Suchen Sie nach 'Realme C63' Gruppen",
+      "reddit": "r/Realme"
+    }
+  },
+  
+  "legal": {
+    "license": "MIT",
+    "disclaimer": "Dieses Tool wird 'AS IS' ohne Garantien bereitgestellt. Die Nutzung erfolgt auf eigenes Risiko. Der Entwickler haftet nicht für Datenverlust, Geräteschäden oder Garantieverlust.",
+    "copyright": "© 2026 Realme C63 Installation Team"
+  }
+}
