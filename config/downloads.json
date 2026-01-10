@@ -1,0 +1,56 @@
+{
+  "spd_flash_tool": {
+    "url": "https://spdflashtool.com/download/spd-flash-tool-r27-24-2301",
+    "version": "R27.24.2301",
+    "sha256": "",
+    "note": "SPD Flash Tool for Spreadtrum/Unisoc devices"
+  },
+  "usb_drivers": {
+    "realme_universal": {
+      "name": "Realme/OPPO/OnePlus Universal Driver",
+      "url": "https://gsmxr.com/oppo-oneplus-realme-latest-driver-setup/",
+      "sha256": "",
+      "note": "Manual download may be required from the website"
+    },
+    "spd_drivers": {
+      "name": "SPD/Spreadtrum Drivers",
+      "url": "https://tech-latest.com/download-latest-spd-drivers-spreadtrum-windows/",
+      "sha256": "",
+      "note": "Required for SPD Flash Tool to detect device"
+    }
+  },
+  "firmware": {
+    "latest": {
+      "version": "RMX3939export_14_A.77",
+      "build_date": "2025050920403600",
+      "url": "https://realmefirmware.com/realme-c63-4g-firmware/",
+      "sha256": "",
+      "note": "Bitte direkten Download-Link zur .PAC-Datei eintragen"
+    },
+    "stable": {
+      "version": "RMX3939export_14_A.54",
+      "build_date": "2024110821200000",
+      "url": "https://realmefirmware.com/realme-c63-4g-firmware/",
+      "sha256": "",
+      "note": "Alternative stable version"
+    },
+    "sources": [
+      "https://www.getdroidtips.com/realme-c63-firmware/",
+      "https://realmefirmware.com/realme-c63-4g-firmware/",
+      "https://gsmmafia.com/realme-c63-rmx3939-flash-file/",
+      "https://romprovider.com/realme-c63-rmx3939-flash-file-stock-rom/"
+    ]
+  },
+  "device_info": {
+    "model": "RMX3939",
+    "name": "Realme C63",
+    "chipset": "Unisoc/Spreadtrum",
+    "flash_method": "SPD Flash Tool",
+    "firmware_format": ".PAC"
+  },
+  "flash_options": {
+    "erase_userdata": true,
+    "verify_after_flash": true,
+    "auto_reboot": true
+  }
+}
