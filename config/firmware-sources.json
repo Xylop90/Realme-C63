@@ -1,0 +1,71 @@
+{
+  "sources": [
+    {
+      "name": "GetDroidTips",
+      "url": "https://www.getdroidtips.com/realme-c63-firmware/",
+      "priority": 1,
+      "requires_login": false,
+      "supports_direct_download": true,
+      "regex_pattern": "RMX3939.*\\.zip",
+      "notes": "Primary source, usually has latest firmware"
+    },
+    {
+      "name": "GSMMAFIA",
+      "url": "https://gsmmafia.com/realme-c63-rmx3939-flash-file/",
+      "priority": 2,
+      "requires_login": false,
+      "supports_direct_download": true,
+      "regex_pattern": "RMX3939.*\\.zip",
+      "notes": "Good alternative source"
+    },
+    {
+      "name": "RealmeFirmware",
+      "url": "https://realmefirmware.com/realme-c63-4g-firmware/",
+      "priority": 3,
+      "requires_login": false,
+      "supports_direct_download": true,
+      "regex_pattern": "RMX3939.*\\.zip",
+      "notes": "Dedicated Realme firmware site"
+    },
+    {
+      "name": "ROMProvider",
+      "url": "https://romprovider.com/realme-c63-rmx3939-flash-file-stock-rom/",
+      "priority": 4,
+      "requires_login": false,
+      "supports_direct_download": true,
+      "regex_pattern": "RMX3939.*\\.zip",
+      "notes": "Reliable ROM provider"
+    },
+    {
+      "name": "Filewale",
+      "url": "https://filewale.com/files/realme-c63-rmx3939export-14-a77-2025050920403600-project-id-24666-24667-24668zip/34003",
+      "priority": 5,
+      "requires_login": false,
+      "supports_direct_download": false,
+      "regex_pattern": "RMX3939export.*\\.zip",
+      "notes": "May require captcha or additional steps"
+    }
+  ],
+  "version_detection": {
+    "regex": "RMX3939export_14_A\\.(\\d+)",
+    "format": "RMX3939export_14_A.{build_number}",
+    "android_version": "14"
+  },
+  "file_types": [
+    {
+      "extension": ".zip",
+      "description": "Firmware package",
+      "extraction_required": true
+    },
+    {
+      "extension": ".pac",
+      "description": "Spreadtrum PAC file",
+      "extraction_tool": "SPD Research Tool"
+    },
+    {
+      "extension": ".ofp",
+      "description": "OPPO Firmware Package",
+      "extraction_tool": "SPD Research Tool"
+    }
+  ]
+}

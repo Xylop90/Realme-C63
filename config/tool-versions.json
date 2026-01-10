@@ -1,0 +1,101 @@
+{
+  "tools": {
+    "spd_flash_tool": {
+      "name": "SPD Flash Tool",
+      "version": "R27.24.2301",
+      "url": "https://spdflashtool.com/download/spd-flash-tool-r27-24-2301",
+      "filename": "SPD_Upgrade_Tool_R27.24.2301.zip",
+      "sha256": "",
+      "last_updated": "2024-01-23",
+      "description": "Spreadtrum flash tool for firmware installation",
+      "required": true
+    },
+    "spd_research_tool": {
+      "name": "SPD Research Tool",
+      "version": "R4.0.0001",
+      "url": "https://spdflashtool.com/research-tool/spd-research-tool-r4-0-0001",
+      "filename": "ResearchDownload_R4.0.0001.zip",
+      "password": "SFT123",
+      "sha256": "",
+      "last_updated": "2023-12-15",
+      "description": "Tool for bootloader unlock and firmware extraction",
+      "required": true
+    },
+    "spd_drivers": {
+      "name": "SPD USB Drivers",
+      "version": "Latest",
+      "url": "https://tech-latest.com/download-latest-spd-drivers-spreadtrum-windows/",
+      "filename": "Spreadtrum_Driver.zip",
+      "sha256": "",
+      "last_updated": "2024-01-10",
+      "description": "Spreadtrum USB drivers for Windows",
+      "required": true,
+      "silent_install": true
+    },
+    "realme_usb_driver": {
+      "name": "Realme Universal USB Driver",
+      "version": "Latest",
+      "url": "https://gsmxr.com/oppo-oneplus-realme-latest-driver-setup/",
+      "filename": "Realme_USB_Driver.exe",
+      "sha256": "",
+      "last_updated": "2024-01-10",
+      "description": "Universal USB driver for Realme devices",
+      "required": true,
+      "silent_install": true,
+      "silent_args": "/S /silent"
+    },
+    "platform_tools": {
+      "name": "Android Platform Tools (ADB/Fastboot)",
+      "version": "Latest",
+      "url": "https://dl.google.com/android/repository/platform-tools-latest-windows.zip",
+      "filename": "platform-tools-latest-windows.zip",
+      "sha256": "",
+      "last_updated": "2026-01-10",
+      "description": "Official Google ADB and Fastboot tools",
+      "required": true,
+      "add_to_path": true
+    },
+    "python_embedded": {
+      "name": "Python 3.11 Embedded",
+      "version": "3.11.0",
+      "url": "https://www.python.org/ftp/python/3.11.0/python-3.11.0-embed-amd64.zip",
+      "filename": "python-3.11.0-embed-amd64.zip",
+      "sha256": "",
+      "last_updated": "2022-10-24",
+      "description": "Embedded Python for unisoc-unlock tool",
+      "required": true,
+      "post_install": ["bootstrap_pip", "install_unisoc_unlock"]
+    },
+    "unisoc_unlock": {
+      "name": "Unisoc Unlock Tool",
+      "version": "Latest",
+      "package": "unisoc-unlock",
+      "install_via": "pip",
+      "repository": "https://github.com/patrislav1/unisoc-unlock",
+      "pypi_url": "https://pypi.org/project/unisoc-unlock/",
+      "description": "Python tool for unlocking Unisoc bootloaders",
+      "required": true
+    },
+    "magisk": {
+      "name": "Magisk",
+      "version": "30.6",
+      "api_url": "https://api.github.com/repos/topjohnwu/Magisk/releases/latest",
+      "download_url": "https://github.com/topjohnwu/Magisk/releases/download/v30.6/Magisk-v30.6.apk",
+      "filename": "Magisk-v30.6.apk",
+      "sha256": "",
+      "last_updated": "2026-01-10",
+      "description": "Universal systemless root solution",
+      "required": true,
+      "check_github_api": true
+    }
+  },
+  "update_check": {
+    "enabled": true,
+    "check_on_startup": true,
+    "auto_download": false,
+    "sources": {
+      "github_releases": "https://api.github.com/repos/Xylop90/Realme-C63/releases/latest",
+      "tool_websites": true
+    }
+  }
+}
