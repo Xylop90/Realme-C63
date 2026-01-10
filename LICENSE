@@ -1,0 +1,40 @@
+MIT License
+
+Copyright (c) 2026 Elektronikx-Center-Matte by Alexander Mathey
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+ADDITIONAL DISCLAIMER FOR DEVICE MODIFICATIONS:
+
+This software is designed to modify Android devices. The use of this software:
+
+1. VOIDS YOUR DEVICE WARRANTY
+2. MAY RESULT IN DATA LOSS
+3. MAY BRICK YOUR DEVICE IF USED INCORRECTLY
+4. MAY VIOLATE TERMS OF SERVICE OF YOUR DEVICE MANUFACTURER
+5. SHOULD BE USED AT YOUR OWN RISK
+
+The authors and copyright holders accept NO LIABILITY for any damage to your
+device, data loss, warranty voidance, or any other consequences resulting from
+the use of this software.
+
+By using this software, you acknowledge that you understand these risks and
+accept full responsibility for any outcomes.
