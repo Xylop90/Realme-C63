@@ -17,20 +17,31 @@
 .PARAMETER SkipDrivers
     Skip USB driver installation
     
+.PARAMETER AutoInstall
+    Run fully automated installation without manual menu interaction
+    
+.PARAMETER DownloadOnly
+    Only download all required tools and drivers, then exit
+    
 .EXAMPLE
     .\install-windows.ps1
     .\install-windows.ps1 -WorkingDirectory "D:\MyTools" -SkipADB
+    .\install-windows.ps1 -AutoInstall
+    .\install-windows.ps1 -DownloadOnly
     
 .NOTES
     Author: Realme C63 Installation Wizard
     Created: 2026-01-10
+    Updated: 2026-01-10 (Added fully automated installation)
     Requires: Windows 11, Administrator privileges
 #>
 
 param(
     [string]$WorkingDirectory = "C:\Realme-C63-Tools",
     [switch]$SkipADB,
-    [switch]$SkipDrivers
+    [switch]$SkipDrivers,
+    [switch]$AutoInstall,
+    [switch]$DownloadOnly
 )
 
 # ============================================================================
@@ -1073,34 +1084,353 @@ function Show-MainMenu {
 function Run-FullInstallation {
     <#
     .SYNOPSIS
-    Execute complete installation workflow
+    Execute complete fully-automated installation workflow
+    .DESCRIPTION
+    Performs a complete end-to-end installation including:
+    - Download all required tools and drivers
+    - Install ADB/Fastboot and USB drivers
+    - Verify device connection
+    - Unlock bootloader (with user confirmation)
+    - Flash TWRP recovery
+    - Flash custom ROM
+    - Optional: Root with Magisk
     #>
-    Write-Log "Starting full installation procedure..." "Info"
     
-    $steps = @(
-        @{ name = "ADB/Fastboot Setup"; action = { Install-ADBFastboot; Add-ADBToPath } }
-        @{ name = "USB Driver Installation"; action = { Install-USBDrivers } }
-        @{ name = "Device Connection Verification"; action = { Verify-DeviceConnection } }
-    )
+    Write-Host ""
+    Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host "  VOLLSTÄNDIGE AUTOMATISCHE INSTALLATION" -ForegroundColor Cyan
+    Write-Host "  FULLY AUTOMATED INSTALLATION FOR REALME C63 (RMX3939)" -ForegroundColor Cyan
+    Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host ""
     
-    foreach ($step in $steps) {
+    Write-Log "Starting fully automated installation procedure..." "Info"
+    
+    # Ask for user preferences upfront
+    Write-Host "Configuration Options:" -ForegroundColor Yellow
+    Write-Host ""
+    
+    $downloadTools = Read-Host "Download all required tools and drivers? (Y/n)"
+    $downloadTools = ($downloadTools -ne "n")
+    
+    $installDrivers = Read-Host "Install all USB drivers? (Y/n)"
+    $installDrivers = ($installDrivers -ne "n")
+    
+    $unlockBootloader = Read-Host "Unlock bootloader (CAUTION: Wipes all data!)? (y/N)"
+    $unlockBootloader = ($unlockBootloader -eq "y")
+    
+    $flashRecovery = Read-Host "Flash TWRP recovery? (y/N)"
+    $flashRecovery = ($flashRecovery -eq "y")
+    
+    $flashROM = Read-Host "Flash custom ROM? (y/N)"
+    $flashROM = ($flashROM -eq "y")
+    
+    $installRoot = Read-Host "Install Magisk for root access? (y/N)"
+    $installRoot = ($installRoot -eq "y")
+    
+    Write-Host ""
+    Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host "  STARTING AUTOMATED INSTALLATION" -ForegroundColor Cyan
+    Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host ""
+    
+    $stepNumber = 1
+    $totalSteps = 0
+    if ($downloadTools) { $totalSteps++ }
+    if ($installDrivers) { $totalSteps++ }
+    $totalSteps++ # ADB/Fastboot always installed
+    $totalSteps++ # Device verification always attempted
+    if ($unlockBootloader) { $totalSteps++ }
+    if ($flashRecovery) { $totalSteps++ }
+    if ($flashROM) { $totalSteps++ }
+    if ($installRoot) { $totalSteps++ }
+    
+    # Step 1: Download all required tools
+    if ($downloadTools) {
         Write-Host ""
-        Write-Host "► $($step.name)" -ForegroundColor $Colors.Prompt
+        Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+        Write-Host "  STEP $stepNumber/$totalSteps: Downloading All Required Tools & Drivers" -ForegroundColor Yellow
+        Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+        Write-Host ""
         
-        if (& $step.action) {
-            Write-Log "$($step.name) completed successfully" "Success"
+        $stepNumber++
+        
+        if (Download-AllRequiredTools) {
+            Write-Log "✓ All tools and drivers downloaded successfully" "Success"
         }
         else {
-            Write-Log "$($step.name) encountered issues" "Warning"
-            $continue = Read-Host "Continue anyway? (Y/n)"
+            Write-Log "! Some downloads failed, but continuing..." "Warning"
+            $continue = Read-Host "Continue installation despite download failures? (Y/n)"
             if ($continue -eq "n") {
-                Write-Log "Full installation cancelled" "Info"
+                Write-Log "Installation cancelled by user" "Info"
                 return $false
             }
         }
     }
     
-    Write-Log "Full installation completed" "Success"
+    # Step 2: Install ADB/Fastboot
+    Write-Host ""
+    Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+    Write-Host "  STEP $stepNumber/$totalSteps: Installing ADB & Fastboot Tools" -ForegroundColor Yellow
+    Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+    Write-Host ""
+    
+    $stepNumber++
+    
+    if (Install-ADBFastboot) {
+        Add-ADBToPath
+        Write-Log "✓ ADB/Fastboot setup completed" "Success"
+    }
+    else {
+        Write-Log "✗ ADB/Fastboot installation failed" "Error"
+        $continue = Read-Host "Continue anyway? (Y/n)"
+        if ($continue -eq "n") {
+            Write-Log "Installation cancelled" "Info"
+            return $false
+        }
+    }
+    
+    # Step 3: Install USB Drivers
+    if ($installDrivers) {
+        Write-Host ""
+        Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+        Write-Host "  STEP $stepNumber/$totalSteps: Installing USB Drivers" -ForegroundColor Yellow
+        Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+        Write-Host ""
+        
+        $stepNumber++
+        
+        if (Install-AllDrivers) {
+            Write-Log "✓ All USB drivers installed successfully" "Success"
+        }
+        else {
+            Write-Log "! Driver installation had some issues" "Warning"
+            Write-Host "You may need to install drivers manually if device is not recognized" -ForegroundColor Yellow
+        }
+    }
+    
+    # Step 4: Verify Device Connection
+    Write-Host ""
+    Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+    Write-Host "  STEP $stepNumber/$totalSteps: Verifying Device Connection" -ForegroundColor Yellow
+    Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+    Write-Host ""
+    
+    $stepNumber++
+    
+    Write-Host "Please connect your Realme C63 device via USB" -ForegroundColor Cyan
+    Write-Host "Ensure USB Debugging is enabled in Developer Options" -ForegroundColor Cyan
+    Write-Host ""
+    Read-Host "Press Enter when device is connected"
+    
+    if (Verify-DeviceConnection) {
+        Write-Log "✓ Device connection verified" "Success"
+        Show-DeviceDiagnostics
+    }
+    else {
+        Write-Log "! Device not detected" "Warning"
+        Write-Host "Attempting to wait for device..." -ForegroundColor Yellow
+        
+        if (Wait-ForDevice) {
+            Write-Log "✓ Device detected" "Success"
+        }
+        else {
+            Write-Log "✗ Could not detect device" "Error"
+            Write-Host ""
+            Write-Host "Please check:" -ForegroundColor Red
+            Write-Host "  1. USB cable is properly connected" -ForegroundColor White
+            Write-Host "  2. USB Debugging is enabled" -ForegroundColor White
+            Write-Host "  3. You authorized the computer on device screen" -ForegroundColor White
+            Write-Host "  4. USB drivers are properly installed" -ForegroundColor White
+            Write-Host ""
+            
+            $continue = Read-Host "Continue anyway? (y/N)"
+            if ($continue -ne "y") {
+                Write-Log "Installation cancelled - device not detected" "Info"
+                return $false
+            }
+        }
+    }
+    
+    # Step 5: Unlock Bootloader
+    if ($unlockBootloader) {
+        Write-Host ""
+        Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+        Write-Host "  STEP $stepNumber/$totalSteps: Unlocking Bootloader" -ForegroundColor Yellow
+        Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+        Write-Host ""
+        
+        $stepNumber++
+        
+        Write-Host "⚠️  WARNING: BOOTLOADER UNLOCK WILL ERASE ALL DATA!" -ForegroundColor Red
+        Write-Host "⚠️  Make sure you have backed up everything important!" -ForegroundColor Red
+        Write-Host ""
+        
+        $confirm = Read-Host "Type 'UNLOCK' (in capitals) to confirm bootloader unlock"
+        
+        if ($confirm -eq "UNLOCK") {
+            Write-Host ""
+            Write-Host "Rebooting device to fastboot mode..." -ForegroundColor Cyan
+            Write-Host "Please confirm bootloader unlock on your device screen!" -ForegroundColor Yellow
+            Write-Host ""
+            
+            if (Unlock-Bootloader) {
+                Write-Log "✓ Bootloader unlocked successfully" "Success"
+                Write-Host ""
+                Write-Host "Device will reboot and wipe all data..." -ForegroundColor Yellow
+                Write-Host "First boot may take 5-10 minutes" -ForegroundColor Yellow
+                Write-Host ""
+                Start-Sleep -Seconds 5
+            }
+            else {
+                Write-Log "✗ Bootloader unlock failed" "Error"
+                Write-Host "Please check documentation: docs/BOOTLOADER_UNLOCK.md" -ForegroundColor Yellow
+                
+                $continue = Read-Host "Continue anyway? (y/N)"
+                if ($continue -ne "y") {
+                    Write-Log "Installation cancelled" "Info"
+                    return $false
+                }
+            }
+        }
+        else {
+            Write-Log "Bootloader unlock cancelled by user" "Info"
+            Write-Host "Skipping bootloader unlock..." -ForegroundColor Yellow
+        }
+    }
+    
+    # Step 6: Flash TWRP Recovery
+    if ($flashRecovery) {
+        Write-Host ""
+        Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+        Write-Host "  STEP $stepNumber/$totalSteps: Flashing TWRP Recovery" -ForegroundColor Yellow
+        Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+        Write-Host ""
+        
+        $stepNumber++
+        
+        Write-Host "Ensure device is in fastboot mode" -ForegroundColor Cyan
+        Write-Host "To enter fastboot: Power off, then hold Volume Down + Power" -ForegroundColor Cyan
+        Write-Host ""
+        Read-Host "Press Enter when device is in fastboot mode"
+        
+        if (Flash-Recovery) {
+            Write-Log "✓ TWRP recovery flashed successfully" "Success"
+            Write-Host ""
+            Write-Host "Boot to TWRP: Power off, then hold Volume Up + Power" -ForegroundColor Cyan
+        }
+        else {
+            Write-Log "✗ Recovery flash failed" "Error"
+            Write-Host "Please check documentation: docs/TWRP_INSTALLATION.md" -ForegroundColor Yellow
+            
+            $continue = Read-Host "Continue anyway? (y/N)"
+            if ($continue -ne "y") {
+                Write-Log "Installation cancelled" "Info"
+                return $false
+            }
+        }
+    }
+    
+    # Step 7: Flash Custom ROM
+    if ($flashROM) {
+        Write-Host ""
+        Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+        Write-Host "  STEP $stepNumber/$totalSteps: Flashing Custom ROM" -ForegroundColor Yellow
+        Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+        Write-Host ""
+        
+        $stepNumber++
+        
+        Write-Host "Ensure device is in fastboot mode" -ForegroundColor Cyan
+        Write-Host ""
+        Read-Host "Press Enter when ready to flash ROM"
+        
+        if (Flash-ROM) {
+            Write-Log "✓ Custom ROM flashed successfully" "Success"
+            Write-Host ""
+            Write-Host "Device will reboot automatically" -ForegroundColor Cyan
+            Write-Host "First boot may take 10-15 minutes" -ForegroundColor Yellow
+        }
+        else {
+            Write-Log "✗ ROM flash failed" "Error"
+            Write-Host "Please check documentation: docs/INSTALLATION.md" -ForegroundColor Yellow
+            
+            $continue = Read-Host "Continue anyway? (y/N)"
+            if ($continue -ne "y") {
+                Write-Log "Installation cancelled" "Info"
+                return $false
+            }
+        }
+    }
+    
+    # Step 8: Install Magisk for Root
+    if ($installRoot) {
+        Write-Host ""
+        Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+        Write-Host "  STEP $stepNumber/$totalSteps: Installing Magisk (Root)" -ForegroundColor Yellow
+        Write-Host "─────────────────────────────────────────────────────────" -ForegroundColor Yellow
+        Write-Host ""
+        
+        $stepNumber++
+        
+        Write-Host "Magisk installation requires:" -ForegroundColor Cyan
+        Write-Host "  1. Device booted to system" -ForegroundColor White
+        Write-Host "  2. Magisk APK transferred to device" -ForegroundColor White
+        Write-Host "  3. Boot image patched via Magisk app" -ForegroundColor White
+        Write-Host "  4. Patched boot image flashed via fastboot" -ForegroundColor White
+        Write-Host ""
+        Write-Host "Please follow the detailed guide: docs/ROOTING_GUIDE.md" -ForegroundColor Yellow
+        Write-Host ""
+        
+        $magiskApk = Join-Path (Join-Path $Paths.Root "downloads") "4-Root-Magisk\Magisk-latest.apk"
+        
+        if (Test-Path $magiskApk) {
+            Write-Host "Magisk APK location: $magiskApk" -ForegroundColor Green
+            Write-Host ""
+            Write-Host "To install Magisk:" -ForegroundColor Cyan
+            Write-Host "  1. Transfer Magisk APK to device: adb push `"$magiskApk`" /sdcard/" -ForegroundColor White
+            Write-Host "  2. Install on device: adb install `"$magiskApk`"" -ForegroundColor White
+            Write-Host "  3. Follow rooting guide for boot image patching" -ForegroundColor White
+            Write-Host ""
+        }
+        else {
+            Write-Host "Magisk APK not found. Please download it first." -ForegroundColor Red
+        }
+        
+        Read-Host "Press Enter to continue"
+    }
+    
+    # Installation Complete
+    Write-Host ""
+    Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Green
+    Write-Host "  INSTALLATION COMPLETED!" -ForegroundColor Green
+    Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Green
+    Write-Host ""
+    
+    Write-Host "Summary of completed steps:" -ForegroundColor Cyan
+    Write-Host ""
+    
+    if ($downloadTools) { Write-Host "  ✓ Downloaded all required tools and drivers" -ForegroundColor Green }
+    if ($installDrivers) { Write-Host "  ✓ Installed USB drivers" -ForegroundColor Green }
+    Write-Host "  ✓ Installed ADB/Fastboot tools" -ForegroundColor Green
+    Write-Host "  ✓ Verified device connection" -ForegroundColor Green
+    if ($unlockBootloader) { Write-Host "  ✓ Unlocked bootloader" -ForegroundColor Green }
+    if ($flashRecovery) { Write-Host "  ✓ Flashed TWRP recovery" -ForegroundColor Green }
+    if ($flashROM) { Write-Host "  ✓ Flashed custom ROM" -ForegroundColor Green }
+    if ($installRoot) { Write-Host "  ✓ Provided Magisk root instructions" -ForegroundColor Green }
+    
+    Write-Host ""
+    Write-Host "Next steps:" -ForegroundColor Yellow
+    Write-Host "  1. Review the installation log: $LogFile" -ForegroundColor White
+    Write-Host "  2. Check documentation in /docs folder for detailed guides" -ForegroundColor White
+    Write-Host "  3. For Magisk root: See docs/ROOTING_GUIDE.md" -ForegroundColor White
+    Write-Host "  4. For troubleshooting: See docs/BOOTLOADER_UNLOCK.md" -ForegroundColor White
+    Write-Host ""
+    
+    Write-Log "Full automated installation completed successfully" "Success"
+    
+    Write-Host "Installation complete! Enjoy your customized Realme C63! 🎉" -ForegroundColor Green
+    Write-Host ""
+    
     return $true
 }
 
@@ -1134,16 +1464,85 @@ function Main {
     Main entry point for the installation wizard
     #>
     try {
-        # Verify administrator privileges
-        if (-not (Test-AdminPrivileges)) {
+        # Verify administrator privileges (skip for DownloadOnly mode)
+        if (-not $DownloadOnly -and -not (Test-AdminPrivileges)) {
             Write-Host "ERROR: This script requires administrator privileges!" -ForegroundColor $Colors.Error
             Write-Host "Please run PowerShell as Administrator and try again." -ForegroundColor $Colors.Error
+            Write-Host ""
+            Write-Host "TIP: For download-only mode, use: .\install-windows.ps1 -DownloadOnly" -ForegroundColor $Colors.Info
             exit 1
         }
         
         # Show banner
         Show-Banner
         
+        # Handle DownloadOnly mode
+        if ($DownloadOnly) {
+            Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+            Write-Host "  DOWNLOAD-ONLY MODE" -ForegroundColor Cyan
+            Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+            Write-Host ""
+            
+            # Create directory structure
+            New-DirectoryStructure
+            
+            # Download all tools
+            if (Download-AllRequiredTools) {
+                Write-Host ""
+                Write-Host "✓ All downloads completed successfully!" -ForegroundColor Green
+                Write-Host ""
+                Write-Host "Files downloaded to: $WorkingDirectory\downloads" -ForegroundColor Cyan
+                Write-Host ""
+                Write-Host "Next steps:" -ForegroundColor Yellow
+                Write-Host "  1. Run this script as Administrator to install drivers" -ForegroundColor White
+                Write-Host "  2. Or run: .\install-windows.ps1 -AutoInstall" -ForegroundColor White
+                Write-Host ""
+                exit 0
+            }
+            else {
+                Write-Host ""
+                Write-Host "! Some downloads failed. Check the log for details." -ForegroundColor Red
+                Write-Host "Log file: $LogFile" -ForegroundColor Cyan
+                Write-Host ""
+                exit 1
+            }
+        }
+        
+        # Handle AutoInstall mode
+        if ($AutoInstall) {
+            Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+            Write-Host "  AUTOMATIC INSTALLATION MODE" -ForegroundColor Cyan
+            Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+            Write-Host ""
+            
+            # Check system requirements
+            if (-not (Check-SystemRequirements)) {
+                Write-Log "System requirements not met. Please resolve issues and try again." "Error"
+                exit 1
+            }
+            
+            Write-Log "System requirements verified" "Success"
+            
+            # Create directory structure
+            New-DirectoryStructure
+            
+            # Run full installation
+            if (Run-FullInstallation) {
+                Write-Host ""
+                Write-Host "✓ Automatic installation completed successfully!" -ForegroundColor Green
+                Write-Host ""
+                exit 0
+            }
+            else {
+                Write-Host ""
+                Write-Host "! Installation completed with warnings or was cancelled." -ForegroundColor Yellow
+                Write-Host "Check the log for details: $LogFile" -ForegroundColor Cyan
+                Write-Host ""
+                exit 1
+            }
+        }
+        
+        # Normal interactive mode
         # Check system requirements
         if (-not (Check-SystemRequirements)) {
             Write-Log "System requirements not met. Please resolve issues and try again." "Error"

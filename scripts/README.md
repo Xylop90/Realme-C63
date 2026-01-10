@@ -52,12 +52,18 @@ This directory contains automated installation and download scripts for Windows 
 - Unlock bootloader
 - Flash recovery
 - Flash ROM
-- Full automated installation
+- **Full automated installation** (Option A)
 
 **Usage:**
 ```powershell
-# Run with administrator privileges
+# Interactive mode (default)
 .\install-windows.ps1
+
+# Fully automated installation (NEW!)
+.\install-windows.ps1 -AutoInstall
+
+# Download-only mode (no admin required)
+.\install-windows.ps1 -DownloadOnly
 
 # Skip ADB installation
 .\install-windows.ps1 -SkipADB
@@ -67,11 +73,26 @@ This directory contains automated installation and download scripts for Windows 
 
 # Custom working directory
 .\install-windows.ps1 -WorkingDirectory "D:\Realme-Tools"
+
+# Combined options
+.\install-windows.ps1 -AutoInstall -WorkingDirectory "D:\Realme-Tools"
 ```
+
+**New Automated Modes:**
+- **-AutoInstall**: Runs complete automated installation with user confirmations
+  - Downloads all tools and drivers
+  - Installs ADB/Fastboot and USB drivers
+  - Verifies device connection
+  - Optionally: Unlocks bootloader, flashes TWRP, flashes ROM, installs Magisk
+  - User prompted for each major step
+
+- **-DownloadOnly**: Downloads all files without installation (no admin needed)
+  - Perfect for preparing files before doing the actual installation
+  - Can be run without administrator privileges
 
 **Requirements:**
 - Windows 10/11
-- **Administrator privileges** required
+- **Administrator privileges** required (except -DownloadOnly mode)
 - PowerShell 5.1 or newer
 - Internet connection
 
@@ -106,6 +127,34 @@ bash install-termux.sh
 
 ## 🚀 Quick Start Guide
 
+### For Windows Users - Fully Automated Installation ⭐ NEW!
+
+**One-command automated installation:**
+
+1. **Open PowerShell as Administrator** (Right-click → Run as Administrator)
+2. Navigate to scripts folder:
+   ```powershell
+   cd C:\path\to\Realme-C63\scripts
+   ```
+3. Enable script execution (if needed):
+   ```powershell
+   Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+   ```
+4. Run fully automated installation:
+   ```powershell
+   .\install-windows.ps1 -AutoInstall
+   ```
+5. Follow the prompts to confirm each step
+
+**What it does:**
+- ✅ Downloads all tools and drivers automatically
+- ✅ Installs ADB/Fastboot and USB drivers
+- ✅ Verifies device connection
+- ✅ Optionally unlocks bootloader (with confirmation)
+- ✅ Optionally flashes TWRP recovery
+- ✅ Optionally flashes custom ROM
+- ✅ Provides Magisk installation instructions
+
 ### For Windows Users - Download Only
 
 If you just want to download all required files:
@@ -115,15 +164,19 @@ If you just want to download all required files:
    ```powershell
    cd C:\path\to\Realme-C63\scripts
    ```
-3. Run download script:
+3. Run download-only mode:
+   ```powershell
+   .\install-windows.ps1 -DownloadOnly
+   ```
+   Or use the standalone download script:
    ```powershell
    .\download-all-tools.ps1
    ```
-4. Files will be downloaded to `C:\Realme-C63-Downloads` by default
+4. Files will be downloaded to `C:\Realme-C63-Tools\downloads` (or `C:\Realme-C63-Downloads`)
 
-### For Windows Users - Full Installation
+### For Windows Users - Interactive Installation
 
-If you want the complete automated installation wizard:
+If you want the complete interactive installation wizard with menu:
 
 1. **Open PowerShell as Administrator** (Right-click → Run as Administrator)
 2. Navigate to scripts folder:
@@ -138,7 +191,7 @@ If you want the complete automated installation wizard:
    ```powershell
    .\install-windows.ps1
    ```
-5. Follow the interactive menu
+5. Follow the interactive menu (choose options 1-9)
 
 ---
 
