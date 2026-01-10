@@ -1,0 +1,19 @@
+[2026-01-10 15:56:37] [INFO] Installer Version: 1.0.1
+[2026-01-10 15:56:37] [INFO] Start Time: 2026-01-10 15:56:37
+[2026-01-10 15:56:37] [INFO] Installation Directory: .
+[2026-01-10 15:56:37] [WARNING] Running in DRY RUN mode - no changes will be made
+[2026-01-10 15:56:37] [DEBUG] Verbose mode enabled
+[2026-01-10 15:56:37] [INFO] Running in non-interactive mode
+[2026-01-10 15:56:37] [DEBUG] Creating directory structure...
+[2026-01-10 15:56:37] [SUCCESS] Directory structure created
+[2026-01-10 15:56:37] [DEBUG] Detecting operating system...
+[2026-01-10 15:56:37] [INFO] OS Type: Linux
+[2026-01-10 15:56:37] [INFO] OS Version: Ubuntu
+[2026-01-10 15:56:37] [INFO] Architecture: x86_64
+[2026-01-10 15:56:37] [SUCCESS] System detection completed
+[2026-01-10 15:56:37] [DEBUG] Detecting package manager...
+[2026-01-10 15:56:37] [INFO] Package Manager: apt
+[2026-01-10 15:56:37] [DEBUG] Package manager detection completed
+[2026-01-10 15:56:37] [DEBUG] Defining dependencies...
+[2026-01-10 15:56:37] [DEBUG] Dependencies defined: 11 packages
+[2026-01-10 15:56:37] [INFO] Skipping dependency installation (--skip-dependencies flag)

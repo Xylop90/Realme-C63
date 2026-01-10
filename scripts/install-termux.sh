@@ -111,7 +111,7 @@ cleanup() {
     log INFO "Starting cleanup process..."
     
     # Remove temporary files if they exist
-    if [[ -d "$TEMP_DIR" ]] && [[ -z "$(ls -A "$TEMP_DIR" 2>/dev/null)" == false ]]; then
+    if [[ -d "$TEMP_DIR" ]] && [[ -n "$(ls -A "$TEMP_DIR" 2>/dev/null)" ]]; then
         log INFO "Removing temporary files..."
         rm -rf "$TEMP_DIR"/* || true
     fi
