@@ -2,13 +2,20 @@
 
 ################################################################################
 # REALME C63 - UNIVERSAL AUTOMATED INSTALLER
-# Version: 1.0.0
+# Version: 1.0.1 (Performance Optimized)
 # Created: 2026-01-10
 # Author: Xylop90
 # 
 # This is the main entry point for the entire automated installation system.
 # It automatically detects the OS, installs dependencies, downloads files,
 # generates configurations, and provides a complete one-command setup.
+#
+# PERFORMANCE OPTIMIZATIONS:
+# - Command caching to avoid repeated lookups
+# - Package list caching for faster dependency checks
+# - Parallel downloads for multiple files
+# - Optimized file operations with proper find flags
+# See PERFORMANCE.md for detailed optimization documentation
 ################################################################################
 
 set -euo pipefail
@@ -17,7 +24,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ============================================================================
 
-declare -r SCRIPT_VERSION="1.0.0"
+declare -r SCRIPT_VERSION="1.0.1"
 declare -r SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 declare -r REPO_URL="https://github.com/Xylop90/Realme-C63"
 declare -r INSTALL_DIR="${INSTALL_DIR:-.}"
@@ -26,6 +33,10 @@ declare -r CONFIG_DIR="${INSTALL_DIR}/config"
 declare -r CACHE_DIR="${INSTALL_DIR}/.cache"
 declare -r BACKUP_DIR="${INSTALL_DIR}/backups"
 declare -r TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S")
+
+# Performance optimization: Cache for command checks to avoid repeated lookups
+# This reduces O(n) command lookups to O(1) for subsequent checks
+declare -A COMMAND_CACHE
 
 # Color codes for output
 declare -r RED='\033[0;31m'
@@ -107,9 +118,16 @@ print_section() {
 # ============================================================================
 
 check_command() {
+    # Check cache first to avoid repeated command lookups
+    if [[ -n "${COMMAND_CACHE[$1]:-}" ]]; then
+        return "${COMMAND_CACHE[$1]}"
+    fi
+    
     if command -v "$1" &> /dev/null; then
+        COMMAND_CACHE[$1]=0
         return 0
     else
+        COMMAND_CACHE[$1]=1
         return 1
     fi
 }
@@ -297,12 +315,29 @@ check_installed_packages() {
     
     INSTALLED_PACKAGES=()
     
+    # Optimize: Get all installed packages in a single query
+    case "${PACKAGE_MANAGER}" in
+        apt)
+            # Cache dpkg output to avoid multiple calls
+            local dpkg_output=$(dpkg -l 2>/dev/null)
+            ;;
+        choco)
+            # Cache choco list output
+            local choco_output=$(choco list --local-only 2>/dev/null)
+            ;;
+        scoop)
+            # Cache scoop list output
+            local scoop_output=$(scoop list 2>/dev/null)
+            ;;
+    esac
+    
     for package in "${DEPENDENCIES[@]}"; do
         local installed=false
         
         case "${PACKAGE_MANAGER}" in
             apt)
-                if dpkg -l | grep -q "^ii.*${package}"; then
+                # Use cached output instead of calling dpkg multiple times
+                if grep -q "^ii.*${package}" <<< "${dpkg_output}"; then
                     installed=true
                 fi
                 ;;
@@ -327,12 +362,14 @@ check_installed_packages() {
                 fi
                 ;;
             choco)
-                if choco list --local-only | grep -q "${package}"; then
+                # Use cached output instead of calling choco multiple times
+                if grep -q "${package}" <<< "${choco_output}"; then
                     installed=true
                 fi
                 ;;
             scoop)
-                if scoop list | grep -q "${package}"; then
+                # Use cached output instead of calling scoop multiple times
+                if grep -q "${package}" <<< "${scoop_output}"; then
                     installed=true
                 fi
                 ;;
@@ -503,13 +540,23 @@ fetch_installation_files() {
     
     info "Fetching ${#files_to_download[@]} file(s)..."
     
+    # Optimize: Download files in parallel for faster completion
+    local pids=()
     for entry in "${files_to_download[@]}"; do
         IFS='|' read -r url destination <<< "${entry}"
-        if download_file "${url}" "${destination}"; then
-            debug "Successfully processed: $(basename ${destination})"
-        else
-            warning "Failed to process: ${url}"
-        fi
+        (
+            if download_file "${url}" "${destination}"; then
+                debug "Successfully processed: $(basename ${destination})"
+            else
+                warning "Failed to process: ${url}"
+            fi
+        ) &
+        pids+=($!)
+    done
+    
+    # Wait for all downloads to complete
+    for pid in "${pids[@]}"; do
+        wait "$pid"
     done
     
     success "File fetch completed"

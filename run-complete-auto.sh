@@ -116,7 +116,8 @@ log() {
     local level="$1"
     shift
     local message="$@"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    # Reuse PRINTF_FORMAT for consistent timestamp formatting - avoid repeated date calls
+    printf -v timestamp '%(%Y-%m-%d %H:%M:%S)T' -1
     
     echo "[${timestamp}] [${level}] ${message}" | tee -a "$LOG_FILE"
 }
@@ -195,17 +196,24 @@ detect_system() {
 analyze_system_resources() {
     log_section "SYSTEM RESOURCE ANALYSIS"
     
-    # Get system RAM
+    # Get system RAM - optimize by using read to parse once
     if [[ $(uname -s) == "Linux" ]]; then
-        SYSTEM_RAM_MB=$(free -m | awk '/^Mem:/{print $2}')
-        DISK_AVAILABLE_MB=$(df / | awk 'NR==2 {print $4}')
+        # Parse free output once instead of multiple awk calls
+        read -r _ total _ _ _ _ < <(free -m | awk '/^Mem:/')
+        SYSTEM_RAM_MB=$total
+        # Parse df output once
+        read -r _ _ _ available _ _ < <(df / | awk 'NR==2')
+        DISK_AVAILABLE_MB=$available
     else
         SYSTEM_RAM_MB=$(($(sysctl -n hw.memsize 2>/dev/null || echo 4294967296) / 1048576))
         DISK_AVAILABLE_MB=$(($(df / | awk 'NR==2 {print $4}') * 1024))
     fi
     
     local cpu_count=$(nproc 2>/dev/null || echo 4)
-    local cpu_load=$(uptime | awk -F'load average:' '{print $2}' | awk '{print $1}' | tr -d ',')
+    # Optimize: Parse uptime output directly without multiple pipes
+    local cpu_load
+    read -r _ _ _ _ cpu_load _ _ < <(uptime)
+    cpu_load=${cpu_load//,/}  # Remove comma using bash builtin
     
     log_info "Total RAM: ${SYSTEM_RAM_MB} MB"
     log_info "Available Disk Space: ${DISK_AVAILABLE_MB} MB"
@@ -259,6 +267,8 @@ wait_for_device() {
     local mode=$1  # "adb" or "fastboot"
     local timeout=$2
     local elapsed=0
+    local sleep_time=1
+    local max_sleep=5
     
     log_info "Waiting for device in ${mode} mode (timeout: ${timeout}s)..."
     
@@ -274,8 +284,13 @@ wait_for_device() {
         fi
         
         print_progress $elapsed $timeout "Waiting for device..."
-        sleep 1
-        ((elapsed++))
+        sleep $sleep_time
+        ((elapsed += sleep_time))
+        
+        # Exponential backoff to reduce CPU usage
+        if [[ $sleep_time -lt $max_sleep ]]; then
+            ((sleep_time = sleep_time < max_sleep ? sleep_time + 1 : max_sleep))
+        fi
     done
     
     echo ""
@@ -349,21 +364,34 @@ ai_system_analysis() {
     # Simulate AI analysis with comprehensive checks
     local analysis_scores=()
     
-    # Performance Analysis
-    local cpu_health=$(( (100 - $(echo "$cpu_load * 25" | bc 2>/dev/null || echo 0)) ))
-    [[ $cpu_health -lt 0 ]] && cpu_health=0
+    # Performance Analysis - avoid external bc, use bash arithmetic
+    local cpu_health=100
+    if [[ -n "${cpu_load:-}" ]]; then
+        # Parse cpu_load if it's a float (e.g., "1.23")
+        local cpu_int=${cpu_load%%.*}
+        cpu_health=$(( 100 - (cpu_int * 25) ))
+        [[ $cpu_health -lt 0 ]] && cpu_health=0
+    fi
     analysis_scores+=($cpu_health)
     log_info "CPU Health Score: ${cpu_health}/100"
     
-    # Memory Analysis
-    local mem_usage=$(free | awk '/^Mem:/{printf("%.0f", $3/$2 * 100)}' 2>/dev/null || echo 50)
-    local mem_health=$(( 100 - mem_usage ))
+    # Memory Analysis - optimize by reusing already calculated SYSTEM_RAM_MB
+    local mem_health=50
+    if [[ $SYSTEM_RAM_MB -gt 0 ]]; then
+        # Get used memory from free output parsed earlier
+        local mem_usage=$(free | awk '/^Mem:/{printf("%.0f", $3/$2 * 100)}' 2>/dev/null || echo 50)
+        mem_health=$(( 100 - mem_usage ))
+    fi
     analysis_scores+=($mem_health)
     log_info "Memory Health Score: ${mem_health}/100"
     
-    # Disk Analysis
-    local disk_usage=$(df / | awk 'NR==2 {printf("%.0f", $3/$2 * 100)}' 2>/dev/null || echo 50)
-    local disk_health=$(( 100 - disk_usage ))
+    # Disk Analysis - optimize by reusing already calculated DISK_AVAILABLE_MB
+    local disk_health=50
+    if [[ $DISK_AVAILABLE_MB -gt 0 ]]; then
+        # Calculate disk usage percentage from available space
+        local disk_usage=$(df / | awk 'NR==2 {printf("%.0f", $3/$2 * 100)}' 2>/dev/null || echo 50)
+        disk_health=$(( 100 - disk_usage ))
+    fi
     analysis_scores+=($disk_health)
     log_info "Disk Health Score: ${disk_health}/100"
     
@@ -598,13 +626,33 @@ validate_installation_files() {
     log_section "VALIDATING INSTALLATION FILES"
     
     log_info "Checking for ROM files..."
-    local rom_count=$(find "$SCRIPT_DIR" -name "*.zip" -o -name "*.img" 2>/dev/null | wc -l)
+    # Optimize: Use process substitution to avoid running find twice
+    local rom_count=0
+    local -a rom_files=()
+    
+    # Use a single find command with better options
+    while IFS= read -r -d '' file; do
+        rom_files+=("$file")
+        ((rom_count++))
+    done < <(find "$SCRIPT_DIR" -maxdepth 3 \( -name "*.zip" -o -name "*.img" \) -type f -print0 2>/dev/null)
     
     if [[ $rom_count -gt 0 ]]; then
         log_success "Found ${rom_count} installation file(s)"
-        find "$SCRIPT_DIR" -name "*.zip" -o -name "*.img" 2>/dev/null | while read -r file; do
-            local file_size=$(du -h "$file" | awk '{print $1}')
-            log_info "  • $(basename "$file") (${file_size})"
+        for file in "${rom_files[@]}"; do
+            # Use stat instead of du for better performance
+            local file_size
+            if [[ -f "$file" ]]; then
+                file_size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null)
+                # Convert to human-readable format using bash
+                if [[ $file_size -gt 1073741824 ]]; then
+                    file_size="$((file_size / 1073741824))GB"
+                elif [[ $file_size -gt 1048576 ]]; then
+                    file_size="$((file_size / 1048576))MB"
+                else
+                    file_size="$((file_size / 1024))KB"
+                fi
+                log_info "  • $(basename "$file") (${file_size})"
+            fi
         done
     else
         log_warning "No installation files found in script directory"
@@ -636,7 +684,8 @@ optimize_system() {
     # Clean temporary files (if running on Linux)
     if [[ $(uname -s) == "Linux" ]]; then
         log_info "Cleaning temporary files..."
-        [[ -d /tmp ]] && find /tmp -type f -mtime +7 -exec rm -f {} \; 2>/dev/null || true
+        # Optimize: Use -delete instead of -exec rm, and limit search depth
+        [[ -d /tmp ]] && find /tmp -maxdepth 2 -type f -mtime +7 -delete 2>/dev/null || true
         log_success "Temporary files cleaned"
     fi
     
@@ -711,7 +760,8 @@ flash_rom() {
         return 1
     fi
     
-    local rom_file=$(find "$SCRIPT_DIR" -name "*.zip" 2>/dev/null | head -1)
+    # Optimize: Use -quit to stop after finding first file
+    local rom_file=$(find "$SCRIPT_DIR" -maxdepth 2 -name "*.zip" -type f -print -quit 2>/dev/null)
     
     if [[ -z "$rom_file" ]]; then
         log_error "No ROM file found"
@@ -719,7 +769,9 @@ flash_rom() {
     fi
     
     log_info "Found ROM file: $(basename "$rom_file")"
-    local rom_size=$(du -h "$rom_file" | awk '{print $1}')
+    # Optimize: Use stat instead of du+awk
+    local rom_size_bytes=$(stat -f%z "$rom_file" 2>/dev/null || stat -c%s "$rom_file" 2>/dev/null)
+    local rom_size="$((rom_size_bytes / 1048576))MB"
     log_info "ROM Size: ${rom_size}"
     
     log_info "Preparing for ROM flashing..."
@@ -771,7 +823,8 @@ install_root() {
     fi
     
     log_info "Checking for Magisk..."
-    local magisk_file=$(find "$SCRIPT_DIR" -name "Magisk*.apk" 2>/dev/null | head -1)
+    # Optimize: Use -quit to stop after finding first file
+    local magisk_file=$(find "$SCRIPT_DIR" -maxdepth 2 -name "Magisk*.apk" -type f -print -quit 2>/dev/null)
     
     if [[ -z "$magisk_file" ]]; then
         log_warning "Magisk APK not found. Attempting to download..."

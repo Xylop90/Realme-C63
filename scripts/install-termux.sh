@@ -111,7 +111,7 @@ cleanup() {
     log INFO "Starting cleanup process..."
     
     # Remove temporary files if they exist
-    if [[ -d "$TEMP_DIR" ]] && [[ -z "$(ls -A "$TEMP_DIR" 2>/dev/null)" == false ]]; then
+    if [[ -d "$TEMP_DIR" ]] && [[ -n "$(ls -A "$TEMP_DIR" 2>/dev/null)" ]]; then
         log INFO "Removing temporary files..."
         rm -rf "$TEMP_DIR"/* || true
     fi
@@ -219,9 +219,21 @@ parse_arguments() {
     done
 }
 
-# Check if command exists
+# Check if command exists - with caching
+declare -A CMD_CACHE
 command_exists() {
-    command -v "$1" &> /dev/null
+    # Use cache to avoid repeated command lookups
+    if [[ -n "${CMD_CACHE[$1]:-}" ]]; then
+        return "${CMD_CACHE[$1]}"
+    fi
+    
+    if command -v "$1" &> /dev/null; then
+        CMD_CACHE[$1]=0
+        return 0
+    else
+        CMD_CACHE[$1]=1
+        return 1
+    fi
 }
 
 # ==============================================================================
@@ -417,44 +429,54 @@ download_file() {
     # Create output directory if needed
     mkdir -p "$(dirname "$output_path")"
     
-    # Download with retry logic
+    # Determine download tool once
+    local download_cmd
+    if command_exists curl; then
+        download_cmd="curl"
+    elif command_exists wget; then
+        download_cmd="wget"
+    else
+        error_exit "Neither curl nor wget found"
+    fi
+    
+    # Download with retry logic and exponential backoff
     local max_retries=3
     local retry_count=0
+    local wait_time=2
     
     while [[ $retry_count -lt $max_retries ]]; do
         log INFO "Attempt $((retry_count + 1))/$max_retries"
         
-        if command_exists curl; then
-            log_command "curl -L -o '$output_path' '$url'"
-            if curl -L -o "$output_path" "$url" 2>&1 | tee -a "$LOG_FILE"; then
-                log SUCCESS "Download completed: $filename"
-                
-                # Verify checksum if provided
-                if [[ -n "$checksum" ]]; then
-                    verify_checksum "$output_path" "$checksum"
-                fi
-                
-                return 0
-            fi
-        elif command_exists wget; then
-            log_command "wget -O '$output_path' '$url'"
-            if wget -O "$output_path" "$url" 2>&1 | tee -a "$LOG_FILE"; then
-                log SUCCESS "Download completed: $filename"
-                
-                if [[ -n "$checksum" ]]; then
-                    verify_checksum "$output_path" "$checksum"
-                fi
-                
-                return 0
+        local success=false
+        if [[ "$download_cmd" == "curl" ]]; then
+            log_command "curl -sSL -o '$output_path' '$url'"
+            if curl -sSL -o "$output_path" "$url" 2>> "$LOG_FILE"; then
+                success=true
             fi
         else
-            error_exit "Neither curl nor wget found"
+            log_command "wget -q -O '$output_path' '$url'"
+            if wget -q -O "$output_path" "$url" 2>> "$LOG_FILE"; then
+                success=true
+            fi
+        fi
+        
+        if [[ "$success" == true ]]; then
+            log SUCCESS "Download completed: $filename"
+            
+            # Verify checksum if provided
+            if [[ -n "$checksum" ]]; then
+                verify_checksum "$output_path" "$checksum"
+            fi
+            
+            return 0
         fi
         
         ((retry_count++))
         if [[ $retry_count -lt $max_retries ]]; then
-            log WARN "Download failed, retrying in 5 seconds..."
-            sleep 5
+            log WARN "Download failed, retrying in ${wait_time} seconds..."
+            sleep $wait_time
+            # Exponential backoff
+            ((wait_time *= 2))
         fi
     done
     
