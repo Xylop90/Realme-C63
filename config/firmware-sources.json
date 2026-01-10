@@ -1,0 +1,84 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-01-10",
+  "device": {
+    "model": "Realme C63",
+    "codename": "RMX3939",
+    "region_variants": [
+      "Global",
+      "India",
+      "Europe"
+    ]
+  },
+  "sources": [
+    {
+      "id": "getdroidtips",
+      "name": "GetDroidTips",
+      "url": "https://www.getdroidtips.com/realme-c63-firmware/",
+      "reliability": "high",
+      "update_frequency": "regular",
+      "scraping_enabled": true,
+      "selectors": {
+        "download_link": "a[href*='download'], a[href*='firmware']",
+        "version": ".version, .firmware-version",
+        "file_size": ".size, .file-size"
+      }
+    },
+    {
+      "id": "gsmmafia",
+      "name": "GSM Mafia",
+      "url": "https://gsmmafia.com/realme-c63-rmx3939-flash-file/",
+      "reliability": "high",
+      "update_frequency": "regular",
+      "scraping_enabled": true,
+      "selectors": {
+        "download_link": "a.download-button, a[href*='flash-file']",
+        "version": ".fw-version",
+        "file_size": ".file-info"
+      }
+    },
+    {
+      "id": "realmefirmware",
+      "name": "Realme Firmware",
+      "url": "https://realmefirmware.com/realme-c63-4g-firmware/",
+      "reliability": "medium",
+      "update_frequency": "occasional",
+      "scraping_enabled": true,
+      "selectors": {
+        "download_link": "a.btn-download",
+        "version": "span.version",
+        "file_size": "span.size"
+      }
+    }
+  ],
+  "manual_sources": [
+    {
+      "name": "Official Realme Support",
+      "url": "https://www.realme.com/support/software-update",
+      "note": "Offizielle Firmware, aber möglicherweise nicht die neueste Version"
+    },
+    {
+      "name": "XDA Developers",
+      "url": "https://forum.xda-developers.com/",
+      "note": "Community-Forum mit Custom ROMs und Firmware-Diskussionen"
+    }
+  ],
+  "file_info": {
+    "expected_extensions": [
+      ".pac",
+      ".zip"
+    ],
+    "typical_size_range": {
+      "min_mb": 800,
+      "max_mb": 2500
+    },
+    "extraction_required": true,
+    "pac_file_location": "firmware/*.pac"
+  },
+  "verification": {
+    "check_file_size": true,
+    "check_extension": true,
+    "check_signature": false,
+    "min_file_size_mb": 500
+  }
+}

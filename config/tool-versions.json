@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "last_check": "2026-01-10",
+  "tools": {
+    "spd_flash_tool": {
+      "name": "SPD Flash Tool",
+      "current_version": "R27.24.2301",
+      "latest_version": "R27.24.2301",
+      "last_updated": "2024-01-15",
+      "installed": false,
+      "path": "",
+      "auto_update": false
+    },
+    "platform_tools": {
+      "name": "Android Platform Tools",
+      "current_version": "35.0.0",
+      "latest_version": "35.0.0",
+      "last_updated": "2024-01-10",
+      "installed": false,
+      "path": "",
+      "auto_update": true
+    },
+    "universal_driver": {
+      "name": "Oppo/Realme Universal Driver",
+      "current_version": "Latest",
+      "latest_version": "Latest",
+      "last_updated": "2024-01-01",
+      "installed": false,
+      "path": "",
+      "auto_update": false
+    },
+    "spd_driver": {
+      "name": "Spreadtrum SPD Driver",
+      "current_version": "Latest",
+      "latest_version": "Latest",
+      "last_updated": "2023-12-15",
+      "installed": false,
+      "path": "",
+      "auto_update": false
+    }
+  },
+  "update_check": {
+    "enabled": true,
+    "frequency_days": 7,
+    "notify_user": true,
+    "auto_download": false
+  }
+}
