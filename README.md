@@ -1,6 +1,13 @@
 # Xtreme XA-vI ®
 **Performance-Optimierte Custom ROM für Realme C63**
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/Version-1.0%20Beta-blue.svg)](https://github.com/Xylop90/Realme-C63/releases)
+[![Android](https://img.shields.io/badge/Android-14-green.svg)](https://www.android.com/)
+[![Device](https://img.shields.io/badge/Device-Realme%20C63-orange.svg)](https://www.realme.com/)
+[![Status](https://img.shields.io/badge/Status-In%20Development-yellow.svg)](https://github.com/Xylop90/Realme-C63)
+[![Contributions](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 ---
 
 ## 📱 Projektinfo
@@ -75,6 +82,8 @@ Wenn du zur Entwicklung beitragen möchtest:
 - **GitHub Issues:** Für Bugs und Feature-Requests
 - **Entwickler:** Alexander Mathey
 - **Elektronikx-Center-Matte:** https://github.com/Xylop90
+- **[Support Guide →](SUPPORT.md)** Hilfe erhalten und Community-Support
+- **[FAQ →](FAQ.md)** Häufig gestellte Fragen und Antworten
 
 ---
 
