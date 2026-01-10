@@ -1,0 +1,277 @@
+name: Test Download Links
+
+on:
+  schedule:
+    # Runs every Monday at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual triggering
+  push:
+    paths:
+      - 'config/downloads.json'
+
+jobs:
+  test-links:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up PowerShell
+        shell: pwsh
+        run: |
+          Write-Host "PowerShell Version: $($PSVersionTable.PSVersion)"
+          Write-Host "OS: $([System.Environment]::OSVersion.VersionString)"
+      
+      - name: Test Download Links
+        shell: pwsh
+        run: |
+          $configPath = "config/downloads.json"
+          
+          if (-not (Test-Path $configPath)) {
+            Write-Error "Config file not found: $configPath"
+            exit 1
+          }
+          
+          $config = Get-Content -Path $configPath -Raw | ConvertFrom-Json
+          
+          $results = @()
+          $failedLinks = @()
+          
+          function Test-Url {
+            param([string]$Url, [int]$Timeout = 10)
+            
+            try {
+              $request = [System.Net.WebRequest]::Create($Url)
+              $request.Timeout = $Timeout * 1000
+              $request.Method = "HEAD"
+              $request.AllowAutoRedirect = $true
+              
+              $response = $request.GetResponse()
+              $statusCode = [int]$response.StatusCode
+              $response.Close()
+              
+              return @{
+                Success = ($statusCode -ge 200 -and $statusCode -lt 400)
+                StatusCode = $statusCode
+                Error = $null
+              }
+            }
+            catch {
+              return @{
+                Success = $false
+                StatusCode = $null
+                Error = $_.Exception.Message
+              }
+            }
+          }
+          
+          Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+          Write-Host "║          Testing Download Links from Config               ║" -ForegroundColor Cyan
+          Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+          Write-Host ""
+          
+          # Test SPD Flash Tool
+          Write-Host "Testing SPD Flash Tool..." -ForegroundColor Yellow
+          $spdUrl = $config.spd_flash_tool.url
+          $result = Test-Url -Url $spdUrl
+          
+          if ($result.Success) {
+            Write-Host "✓ SPD Flash Tool: OK ($($result.StatusCode))" -ForegroundColor Green
+          }
+          else {
+            Write-Host "✗ SPD Flash Tool: FAILED" -ForegroundColor Red
+            Write-Host "  URL: $spdUrl" -ForegroundColor Gray
+            Write-Host "  Error: $($result.Error)" -ForegroundColor Red
+            $failedLinks += @{
+              Name = "SPD Flash Tool"
+              Url = $spdUrl
+              Error = $result.Error
+            }
+          }
+          
+          $results += @{
+            Category = "SPD Flash Tool"
+            Url = $spdUrl
+            Success = $result.Success
+            StatusCode = $result.StatusCode
+            Error = $result.Error
+          }
+          
+          # Test USB Drivers
+          Write-Host ""
+          Write-Host "Testing USB Drivers..." -ForegroundColor Yellow
+          
+          foreach ($driverKey in $config.usb_drivers.PSObject.Properties.Name) {
+            $driver = $config.usb_drivers.$driverKey
+            $driverUrl = $driver.url
+            $result = Test-Url -Url $driverUrl
+            
+            if ($result.Success) {
+              Write-Host "✓ $($driver.name): OK ($($result.StatusCode))" -ForegroundColor Green
+            }
+            else {
+              Write-Host "✗ $($driver.name): FAILED" -ForegroundColor Red
+              Write-Host "  URL: $driverUrl" -ForegroundColor Gray
+              Write-Host "  Error: $($result.Error)" -ForegroundColor Red
+              $failedLinks += @{
+                Name = $driver.name
+                Url = $driverUrl
+                Error = $result.Error
+              }
+            }
+            
+            $results += @{
+              Category = "USB Driver - $driverKey"
+              Url = $driverUrl
+              Success = $result.Success
+              StatusCode = $result.StatusCode
+              Error = $result.Error
+            }
+          }
+          
+          # Test Firmware Sources
+          Write-Host ""
+          Write-Host "Testing Firmware Sources..." -ForegroundColor Yellow
+          
+          foreach ($source in $config.firmware.sources) {
+            $result = Test-Url -Url $source
+            
+            if ($result.Success) {
+              Write-Host "✓ $source : OK ($($result.StatusCode))" -ForegroundColor Green
+            }
+            else {
+              Write-Host "✗ $source : FAILED" -ForegroundColor Red
+              Write-Host "  Error: $($result.Error)" -ForegroundColor Red
+              $failedLinks += @{
+                Name = "Firmware Source"
+                Url = $source
+                Error = $result.Error
+              }
+            }
+            
+            $results += @{
+              Category = "Firmware Source"
+              Url = $source
+              Success = $result.Success
+              StatusCode = $result.StatusCode
+              Error = $result.Error
+            }
+          }
+          
+          # Summary
+          Write-Host ""
+          Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+          Write-Host "║                      Summary                               ║" -ForegroundColor Cyan
+          Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+          
+          $totalLinks = $results.Count
+          $successfulLinks = ($results | Where-Object { $_.Success }).Count
+          $failedCount = $failedLinks.Count
+          
+          Write-Host ""
+          Write-Host "Total links tested: $totalLinks" -ForegroundColor White
+          Write-Host "Successful: $successfulLinks" -ForegroundColor Green
+          Write-Host "Failed: $failedCount" -ForegroundColor $(if ($failedCount -gt 0) { "Red" } else { "Green" })
+          Write-Host ""
+          
+          # Export results
+          $results | ConvertTo-Json -Depth 10 | Out-File -FilePath "link-test-results.json"
+          Write-Host "Results saved to: link-test-results.json" -ForegroundColor Cyan
+          
+          # Exit with error if any links failed
+          if ($failedCount -gt 0) {
+            Write-Host ""
+            Write-Host "⚠️  Some links are not accessible!" -ForegroundColor Red
+            Write-Host "Please check the failed links and update the configuration." -ForegroundColor Yellow
+            exit 1
+          }
+          else {
+            Write-Host ""
+            Write-Host "✓ All links are accessible!" -ForegroundColor Green
+          }
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: link-test-results
+          path: link-test-results.json
+          retention-days: 30
+      
+      - name: Create issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let resultsContent = '';
+            try {
+              const results = JSON.parse(fs.readFileSync('link-test-results.json', 'utf8'));
+              const failedLinks = results.filter(r => !r.Success);
+              
+              resultsContent = '## Failed Links\n\n';
+              failedLinks.forEach(link => {
+                resultsContent += `### ${link.Category}\n`;
+                resultsContent += `- **URL:** ${link.Url}\n`;
+                resultsContent += `- **Error:** ${link.Error || 'Unknown'}\n`;
+                resultsContent += `- **Status Code:** ${link.StatusCode || 'N/A'}\n\n`;
+              });
+            } catch (error) {
+              resultsContent = 'Could not parse test results.\n';
+            }
+            
+            const issueTitle = '🔗 Download Links Test Failed';
+            const issueBody = `# Download Links Test Failed
+            
+            The automated test for download links has detected broken or inaccessible links.
+            
+            ${resultsContent}
+            
+            ## Action Required
+            
+            Please review the failed links and update \`config/downloads.json\` with working alternatives.
+            
+            ## Test Details
+            
+            - **Date:** ${new Date().toISOString()}
+            - **Workflow:** ${context.workflow}
+            - **Run ID:** ${context.runId}
+            
+            ---
+            
+            *This issue was automatically created by the Download Links Test workflow.*`;
+            
+            // Check if an issue already exists
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['download-links', 'automated']
+            });
+            
+            const existingIssue = issues.data.find(issue => issue.title === issueTitle);
+            
+            if (existingIssue) {
+              // Update existing issue
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existingIssue.number,
+                body: `## New Test Failure\n\n${issueBody}`
+              });
+              
+              console.log(`Updated existing issue #${existingIssue.number}`);
+            } else {
+              // Create new issue
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: issueTitle,
+                body: issueBody,
+                labels: ['download-links', 'automated', 'bug']
+              });
+              
+              console.log('Created new issue');
+            }
