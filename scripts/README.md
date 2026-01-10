@@ -151,9 +151,41 @@ install-windows.bat
 
 ---
 
+#### 4. `install-realme-drivers.ps1` ⭐ NEW!
+**Realme USB Driver installer** - Downloads and prepares Realme-specific USB drivers for C63.
+
+**Features:**
+- Downloads official Realme USB drivers
+- Extracts to C:\Realme_Drivers
+- Provides step-by-step manual installation guide
+- Automatic cleanup of temporary files
+- Fallback to manual download link
+
+**Usage:**
+```powershell
+# Run as Administrator
+.\install-realme-drivers.ps1
+```
+
+**Manual Installation Steps (shown by script):**
+1. Open Device Manager (Win + X, then M)
+2. Find 'Android Device' or unknown device
+3. Right-click → Update driver
+4. Browse to: C:\Realme_Drivers
+5. Select 'Android Bootloader Interface'
+
+**Requirements:**
+- Windows 10/11
+- PowerShell 5.1 or newer
+- **Administrator privileges** required
+- Internet connection
+- ~50MB disk space
+
+---
+
 ### Android/Termux Script
 
-#### 4. `install-termux.sh`
+#### 5. `install-termux.sh`
 **Termux installation script** - For installing tools directly on Android device via Termux.
 
 **Usage:**
