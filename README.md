@@ -1,5 +1,18 @@
 # Xtreme XA-vI ®
-**Performance-Optimierte Custom ROM für Realme C63**
+**Performance-Optimierte Custom ROM für Realme C63 (RMX3939)**
+
+---
+
+## 📖 Quick Navigation
+
+| Guide | Beschreibung | Status |
+|-------|--------------|--------|
+| [🔐 Bootloader Unlock](docs/BOOTLOADER_UNLOCK.md) | Bootloader entsperren (7-15 Tage Wartezeit) | ✅ Komplett |
+| [🛠️ TWRP Installation](docs/TWRP_INSTALLATION.md) | Custom Recovery installieren | ✅ Komplett |
+| [🔑 Rooting Guide](docs/ROOTING_GUIDE.md) | Root mit Magisk (inkl. SafetyNet) | ✅ Komplett |
+| [📥 ROM Installation](docs/INSTALLATION.md) | Xtreme XA-vI ROM installieren | ✅ Verfügbar |
+| [📝 Changelog](docs/CHANGELOG.md) | Versionshistorie & Updates | ✅ Verfügbar |
+| [🛠️ Development](docs/DEVELOPMENT.md) | Entwickler-Dokumentation | ✅ Verfügbar |
 
 ---
 
@@ -27,22 +40,44 @@
 
 ## 📋 Voraussetzungen
 
-- **Gerät:** Realme C63
-- **Android Version:** [Version eintragen]
-- **TWRP Recovery:** v[Version]
+- **Gerät:** Realme C63 (RMX3939)
+- **Android Version:** Android 12 / Realme UI 3.0+
+- **TWRP Recovery:** v3.x+ ([TWRP Installations-Guide](docs/TWRP_INSTALLATION.md))
 - **ADB & Fastboot** auf dem PC installiert
 - **USB-Debugging** aktiviert
 - **Bootloader entsperrt** (Siehe Guide unten)
+- **Optional:** Root-Zugriff mit Magisk ([Rooting Guide](docs/ROOTING_GUIDE.md))
 
 ---
 
-## 🔓 Bootloader Unlock
+## 🔓 Bootloader Unlock & Root
 
-Bevor du die ROM installieren kannst, musst du deinen Bootloader entsperren:
+Bevor du die ROM installieren kannst, musst du deinen Bootloader entsperren und optional dein Gerät rooten:
 
-👉 **[Zum Bootloader-Unlock Guide →](docs/BOOTLOADER_UNLOCK.md)**
+### Schritt-für-Schritt Guides:
 
-⚠️ **WARNUNG:** Dies löscht alle Daten auf deinem Gerät!
+1. 🔐 **[Bootloader Unlock Guide →](docs/BOOTLOADER_UNLOCK.md)**
+   - Komplette Anleitung für Realme C63 (RMX3939)
+   - Realme-spezifischer Freischaltungsprozess
+   - Detaillierte Fehlerbehebung
+   - Wartezeit: 7-15 Tage für offizielle Genehmigung
+
+2. 🛠️ **[TWRP Installation →](docs/TWRP_INSTALLATION.md)**
+   - Custom Recovery Installation
+   - Backup & Restore Funktionen
+   - Notwendig für ROM-Installation
+
+3. 🔑 **[Rooting mit Magisk →](docs/ROOTING_GUIDE.md)**
+   - Vollständiger Root-Zugriff
+   - Magisk Module Support
+   - SafetyNet Fix & Banking Apps
+   - Sicherheitskonfiguration
+
+⚠️ **WICHTIGE WARNUNGEN:**
+- Bootloader-Entsperrung **löscht alle Daten**!
+- Garantie wird **ungültig**
+- Erstelle vorher ein **Backup**
+- Prozess kann **7-15 Tage** dauern (Realme Genehmigung)
 
 ---
 
@@ -75,6 +110,19 @@ Wenn du zur Entwicklung beitragen möchtest:
 - **GitHub Issues:** Für Bugs und Feature-Requests
 - **Entwickler:** Alexander Mathey
 - **Elektronikx-Center-Matte:** [Link eintragen]
+
+### 📚 Dokumentation & Guides
+- [Bootloader Unlock Guide](docs/BOOTLOADER_UNLOCK.md) - Realme C63 (RMX3939)
+- [TWRP Installation Guide](docs/TWRP_INSTALLATION.md)
+- [Rooting mit Magisk Guide](docs/ROOTING_GUIDE.md)
+- [ROM Installation](docs/INSTALLATION.md)
+- [Entwickler-Dokumentation](docs/DEVELOPMENT.md)
+- [Changelog](docs/CHANGELOG.md)
+
+### 🌐 Community Resources
+- **XDA Developers:** [Realme C63 Forum](https://forum.xda-developers.com/)
+- **Realme Community:** [https://c.realme.com/](https://c.realme.com/)
+- **Reddit:** r/Realme
 
 ---
 
