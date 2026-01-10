@@ -27,6 +27,9 @@ declare -r CACHE_DIR="${INSTALL_DIR}/.cache"
 declare -r BACKUP_DIR="${INSTALL_DIR}/backups"
 declare -r TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S")
 
+# Cache for command checks to avoid repeated lookups
+declare -A COMMAND_CACHE
+
 # Color codes for output
 declare -r RED='\033[0;31m'
 declare -r GREEN='\033[0;32m'
@@ -107,9 +110,16 @@ print_section() {
 # ============================================================================
 
 check_command() {
+    # Check cache first to avoid repeated command lookups
+    if [[ -n "${COMMAND_CACHE[$1]:-}" ]]; then
+        return "${COMMAND_CACHE[$1]}"
+    fi
+    
     if command -v "$1" &> /dev/null; then
+        COMMAND_CACHE[$1]=0
         return 0
     else
+        COMMAND_CACHE[$1]=1
         return 1
     fi
 }
@@ -297,12 +307,29 @@ check_installed_packages() {
     
     INSTALLED_PACKAGES=()
     
+    # Optimize: Get all installed packages in a single query
+    case "${PACKAGE_MANAGER}" in
+        apt)
+            # Cache dpkg output to avoid multiple calls
+            local dpkg_output=$(dpkg -l 2>/dev/null)
+            ;;
+        choco)
+            # Cache choco list output
+            local choco_output=$(choco list --local-only 2>/dev/null)
+            ;;
+        scoop)
+            # Cache scoop list output
+            local scoop_output=$(scoop list 2>/dev/null)
+            ;;
+    esac
+    
     for package in "${DEPENDENCIES[@]}"; do
         local installed=false
         
         case "${PACKAGE_MANAGER}" in
             apt)
-                if dpkg -l | grep -q "^ii.*${package}"; then
+                # Use cached output instead of calling dpkg multiple times
+                if grep -q "^ii.*${package}" <<< "${dpkg_output}"; then
                     installed=true
                 fi
                 ;;
@@ -327,12 +354,14 @@ check_installed_packages() {
                 fi
                 ;;
             choco)
-                if choco list --local-only | grep -q "${package}"; then
+                # Use cached output instead of calling choco multiple times
+                if grep -q "${package}" <<< "${choco_output}"; then
                     installed=true
                 fi
                 ;;
             scoop)
-                if scoop list | grep -q "${package}"; then
+                # Use cached output instead of calling scoop multiple times
+                if grep -q "${package}" <<< "${scoop_output}"; then
                     installed=true
                 fi
                 ;;
