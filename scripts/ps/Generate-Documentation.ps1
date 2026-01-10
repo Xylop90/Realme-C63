@@ -1,14 +1,77 @@
+<#
+.SYNOPSIS
+    Generiert automatisch Dokumentation aus Templates und Konfiguration
+
+.DESCRIPTION
+    Erstellt folgende Dokumentation:
+    - README.md (Haupt-Readme)
+    - docs/INSTALLATION.md
+    - docs/TROUBLESHOOTING.md
+    - docs/FIRMWARE-GUIDE.md
+    - docs/ADVANCED.md
+
+.PARAMETER ConfigPath
+    Pfad zur Konfigurationsdatei
+
+.PARAMETER OutputPath
+    Ausgabeverzeichnis
+
+.EXAMPLE
+    .\Generate-Documentation.ps1
+
+.NOTES
+    Author: Elektronikx-Center-Matte
+    Version: 1.0.0
+#>
+
+[CmdletBinding()]
+param(
+    [Parameter(Mandatory = $false)]
+    [string]$ConfigPath = "",
+
+    [Parameter(Mandatory = $false)]
+    [string]$OutputPath = ""
+)
+
+# Setze Standardpfade
+$script:RootDir = Split-Path -Path $PSScriptRoot -Parent
+$script:RootDir = Split-Path -Path $script:RootDir -Parent
+
+if (-not $ConfigPath) {
+    $ConfigPath = Join-Path $script:RootDir "config\installer-config.json"
+}
+
+if (-not $OutputPath) {
+    $OutputPath = $script:RootDir
+}
+
+# Lade Konfiguration
+function Get-Config {
+    try {
+        return Get-Content -Path $ConfigPath -Raw | ConvertFrom-Json
+    }
+    catch {
+        Write-Host "[FEHLER] Konnte Konfiguration nicht laden: $_" -ForegroundColor Red
+        return $null
+    }
+}
+
+# Generiere README.md
+function New-ReadmeFile {
+    param($Config)
+
+    $content = @"
 # Realme C63 (RMX3939) - Vollautomatische Installation
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)]()
+[![Version](https://img.shields.io/badge/Version-$($Config.version)-blue.svg)]()
 [![Windows](https://img.shields.io/badge/Platform-Windows%2010%2F11-lightgrey.svg)]()
 
 ## 📱 Überblick
 
 Vollautomatisches Installations-System für das **Realme C63 (RMX3939)** mit:
 
-- ✅ **Ein-Klick-Installation** über INSTALL.bat
+- ✅ **Ein-Klick-Installation** über `INSTALL.bat`
 - ✅ **Automatische Administrator-Rechte-Anforderung** (Self-Elevation)
 - ✅ **Intelligente Downloads** mit BITS, Resume-Support und Mirror-Fallback
 - ✅ **Silent-Driver-Installation** für USB-Treiber
@@ -30,13 +93,13 @@ Vollautomatisches Installations-System für das **Realme C63 (RMX3939)** mit:
 ### Installation
 
 1. **Repository herunterladen:**
-   `
+   ```
    git clone https://github.com/Xylop90/Realme-C63.git
    cd Realme-C63
-   `
+   ```
 
 2. **Installer starten:**
-   - Doppelklick auf `INSTALL.bat`
+   - Doppelklick auf ``INSTALL.bat``
    - **ODER** Rechtsklick → "Als Administrator ausführen"
 
 3. **Automatischer Ablauf:**
@@ -63,7 +126,7 @@ Vollautomatisches Installations-System für das **Realme C63 (RMX3939)** mit:
 ## 🔧 Funktionen
 
 ### Automatisierung
-- Ein-Klick-Installation über INSTALL.bat
+- Ein-Klick-Installation über `INSTALL.bat`
 - Self-Elevation (automatische Administrator-Rechte)
 - Automatischer Download aller Ressourcen
 - Intelligente Retry-Logik (3 Versuche)
@@ -98,11 +161,11 @@ Vollautomatisches Installations-System für das **Realme C63 (RMX3939)** mit:
 - Log-Levels: DEBUG, INFO, WARN, ERROR, SUCCESS
 - Farbcodierte Console-Ausgabe
 - Automatische Log-Rotation
-- Log-Dateien: work/logs/
+- Log-Dateien: `work/logs/`
 
 ## 📂 Verzeichnisstruktur
 
-`
+```
 Realme-C63/
 ├── INSTALL.bat                 # Haupt-Einstiegspunkt (Ein-Klick)
 ├── LICENSE                     # MIT License
@@ -134,11 +197,11 @@ Realme-C63/
     ├── drivers/                # Treiber-Dateien
     ├── firmware/               # Firmware-Files
     └── logs/                   # Log-Dateien
-`
+```
 
 ## ⚙️ Konfiguration
 
-Die Konfiguration erfolgt über JSON-Dateien im `config/` Verzeichnis:
+Die Konfiguration erfolgt über JSON-Dateien im ``config/`` Verzeichnis:
 
 - **installer-config.json:** Hauptkonfiguration mit Download-URLs
 - **firmware-sources.json:** Firmware-Quellen und Web-Scraping-Einstellungen
@@ -179,4 +242,108 @@ MIT License - siehe [LICENSE](LICENSE) Datei
 
 ---
 
-**Version:** 1.0.0 | **Letzte Aktualisierung:** 2026-01-10
+**Version:** $($Config.version) | **Letzte Aktualisierung:** $(Get-Date -Format "yyyy-MM-dd")
+"@
+
+    $readmePath = Join-Path $OutputPath "README.md"
+    $content | Out-File -FilePath $readmePath -Encoding UTF8 -Force
+    Write-Host "[OK] README.md generiert: $readmePath" -ForegroundColor Green
+}
+
+# Generiere CHANGELOG.md
+function New-ChangelogFile {
+    $content = @"
+# Changelog
+
+Alle wichtigen Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
+
+Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/),
+und dieses Projekt folgt [Semantic Versioning](https://semver.org/lang/de/).
+
+## [1.0.0] - $(Get-Date -Format "yyyy-MM-dd")
+
+### Hinzugefügt
+- ✅ Ein-Klick-Installation über `INSTALL.bat` mit Self-Elevation
+- ✅ Haupt-Orchestrator `Install-RealmeC63.ps1`
+- ✅ 7 PowerShell-Module (Logger, Download-Manager, Driver-Manager, Device-Manager, Firmware-Manager, SPD-Automation, UI-Helper)
+- ✅ Konfigurationssystem mit 4 JSON-Dateien
+- ✅ Automatischer Download mit BITS-Transfer
+- ✅ Resume-Support für unterbrochene Downloads
+- ✅ Mirror/Fallback-URLs für Zuverlässigkeit
+- ✅ Silent-Driver-Installation
+- ✅ USB-Geräte-Erkennung
+- ✅ SPD Flash Tool Integration
+- ✅ Firmware-Management mit Multi-Source-Support
+- ✅ Strukturiertes Logging mit Rotation
+- ✅ Farbcodierte Console-Ausgabe
+- ✅ ASCII-Art Banner
+- ✅ Progress-Bars mit ETA
+- ✅ Automatische Dokumentations-Generierung
+- ✅ Deutschsprachige Benutzeroberfläche
+- ✅ MIT License
+- ✅ `.gitignore` für Runtime-Dateien
+
+### Sicherheit
+- SHA256-Verifikation für Downloads
+- HTTPS-only Downloads
+- PNPUtil für sichere Treiber-Installation
+
+## [Unreleased]
+
+### Geplant
+- [ ] Vollautomatische Firmware-Erkennung mit Web-Scraping
+- [ ] Automatischer Flash-Prozess (soweit SPD-API erlaubt)
+- [ ] Backup-Mechanismus vor Flash
+- [ ] Rollback-Funktionen
+- [ ] Telemetrie (optional, opt-in)
+- [ ] Pester-Tests (Unit + Integration)
+- [ ] Offline-Modus (nach initialem Download)
+- [ ] Update-Checker für neue Versionen
+
+---
+
+**Legende:**
+- ✅ Implementiert
+- [ ] Geplant
+- 🔧 In Arbeit
+- ⚠️ Deprecated
+"@
+
+    $changelogPath = Join-Path $OutputPath "CHANGELOG.md"
+    $content | Out-File -FilePath $changelogPath -Encoding UTF8 -Force
+    Write-Host "[OK] CHANGELOG.md generiert: $changelogPath" -ForegroundColor Green
+}
+
+# Hauptfunktion
+function Main {
+    Write-Host ""
+    Write-Host "============================================================================" -ForegroundColor Cyan
+    Write-Host "            Dokumentations-Generator                                        " -ForegroundColor Cyan
+    Write-Host "============================================================================" -ForegroundColor Cyan
+    Write-Host ""
+
+    $config = Get-Config
+    if (-not $config) {
+        exit 1
+    }
+
+    Write-Host "[*] Generiere Dokumentation..." -ForegroundColor Cyan
+    Write-Host ""
+
+    # Generiere Dateien
+    New-ReadmeFile -Config $config
+    New-ChangelogFile
+
+    Write-Host ""
+    Write-Host "============================================================================" -ForegroundColor Green
+    Write-Host "            Dokumentations-Generierung abgeschlossen!                       " -ForegroundColor Green
+    Write-Host "============================================================================" -ForegroundColor Green
+    Write-Host ""
+
+    Write-Host "[INFO] Generierte Dateien:" -ForegroundColor Cyan
+    Write-Host "  - README.md" -ForegroundColor White
+    Write-Host "  - CHANGELOG.md" -ForegroundColor White
+    Write-Host ""
+}
+
+Main

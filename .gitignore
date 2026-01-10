@@ -1,0 +1,57 @@
+# Runtime directories
+work/
+downloads/
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Windows system files
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Build artifacts
+*.zip
+*.exe
+*.msi
+*.cab
+!tools/.keep
+
+# Driver files (downloaded at runtime)
+drivers/*.inf
+drivers/*.cat
+drivers/*.sys
+
+# Firmware files (too large)
+*.pac
+*.img
+*.bin
+
+# PowerShell artifacts
+*.ps1xml
+*.ps1.bak
+
+# Logs
+*.log
+*.log.*
+
+# IDE files
+.vscode/
+.vs/
+*.suo
+*.user
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Keep directory structure
+!work/.keep
+!downloads/.keep
+!logs/.keep

@@ -1,0 +1,111 @@
+{
+  "version": "1.0.0",
+  "auto_update_config": true,
+  "sources": {
+    "spd_flash_tool": {
+      "primary": "https://spdflashtool.com/download/spd-flash-tool-latest",
+      "fallback": [
+        "https://www.gsmflashtools.com/spd-flash-tool",
+        "https://androidmtk.com/download-spd-flash-tool"
+      ],
+      "version": "Latest",
+      "sha256": ""
+    },
+    "usb_drivers": {
+      "universal": {
+        "name": "Oppo/Realme Universal Driver",
+        "url": "https://gsmxr.com/oppo-oneplus-realme-latest-driver-setup/",
+        "direct_download": "https://dl.gsm.com/drivers/oppo-realme-universal-driver.exe",
+        "silent_args": "/S /silent /qn",
+        "sha256": ""
+      },
+      "spd_specific": {
+        "name": "Spreadtrum SPD Driver",
+        "url": "https://tech-latest.com/download-latest-spd-drivers-spreadtrum-windows/",
+        "direct_download": "https://dl.tech-latest.com/spd-driver-latest.zip",
+        "sha256": ""
+      },
+      "realme_specific": {
+        "name": "Realme USB Driver",
+        "url": "https://www.mobileguru4.com/download-realme-usb-driver/",
+        "direct_download": "https://dl.mobileguru4.com/realme-usb-driver.zip",
+        "sha256": ""
+      }
+    },
+    "platform_tools": {
+      "name": "Android Platform Tools (ADB/Fastboot)",
+      "url": "https://dl.google.com/android/repository/platform-tools-latest-windows.zip",
+      "version": "Latest",
+      "sha256": "",
+      "optional": true
+    },
+    "firmware": {
+      "auto_discover": true,
+      "sources": [
+        {
+          "name": "GetDroidTips",
+          "url": "https://www.getdroidtips.com/realme-c63-firmware/",
+          "type": "web_scraping",
+          "pattern": "download.*\\.zip|firmware.*\\.pac"
+        },
+        {
+          "name": "GSM Mafia",
+          "url": "https://gsmmafia.com/realme-c63-rmx3939-flash-file/",
+          "type": "web_scraping",
+          "pattern": "download.*firmware"
+        },
+        {
+          "name": "Realme Firmware",
+          "url": "https://realmefirmware.com/realme-c63-4g-firmware/",
+          "type": "web_scraping",
+          "pattern": "RMX3939.*\\.zip"
+        }
+      ],
+      "preferred_version": "latest",
+      "manual_url": "",
+      "file_extensions": [
+        ".pac",
+        ".zip",
+        ".bin"
+      ]
+    }
+  },
+  "automation": {
+    "require_admin": true,
+    "silent_driver_install": true,
+    "auto_device_detection": true,
+    "auto_flash": false,
+    "create_backup": true,
+    "create_desktop_shortcut": true,
+    "add_to_path": false
+  },
+  "advanced": {
+    "parallel_downloads": true,
+    "use_bits_transfer": true,
+    "max_retries": 3,
+    "timeout_seconds": 300,
+    "download_buffer_size": 8192,
+    "enable_checkpoints": true,
+    "log_level": "Info",
+    "log_rotation_days": 7,
+    "max_log_size_mb": 10
+  },
+  "ui": {
+    "language": "de",
+    "show_progress_bars": true,
+    "show_ascii_art": true,
+    "color_output": true,
+    "confirm_before_flash": true,
+    "show_eta": true
+  },
+  "device": {
+    "model": "Realme C63",
+    "codename": "RMX3939",
+    "manufacturer": "Realme",
+    "chipset": "Spreadtrum/UNISOC",
+    "required_drivers": [
+      "spd_specific",
+      "universal"
+    ]
+  }
+}

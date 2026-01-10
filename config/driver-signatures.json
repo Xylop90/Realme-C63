@@ -1,0 +1,45 @@
+{
+  "version": "1.0.0",
+  "drivers": {
+    "oppo_realme_universal": {
+      "name": "Oppo/Realme Universal USB Driver",
+      "publisher": "Oppo/Realme",
+      "version": "Latest",
+      "sha256": "",
+      "file_patterns": [
+        "*.inf",
+        "*.cat",
+        "*.sys"
+      ],
+      "verification": "optional"
+    },
+    "spreadtrum_spd": {
+      "name": "Spreadtrum SPD Driver",
+      "publisher": "Spreadtrum Communications",
+      "version": "Latest",
+      "sha256": "",
+      "file_patterns": [
+        "spd*.inf",
+        "spd*.sys"
+      ],
+      "verification": "optional"
+    },
+    "realme_specific": {
+      "name": "Realme Specific USB Driver",
+      "publisher": "Realme Mobile",
+      "version": "Latest",
+      "sha256": "",
+      "file_patterns": [
+        "realme*.inf"
+      ],
+      "verification": "optional"
+    }
+  },
+  "verification_policy": {
+    "require_signature": false,
+    "allow_self_signed": true,
+    "check_publisher": false,
+    "strict_mode": false
+  },
+  "note": "SHA256-Hashes werden bei der ersten Installation automatisch erfasst und gespeichert"
+}
