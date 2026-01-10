@@ -3,7 +3,7 @@ REM ============================================================================
 REM REALME C63 (RMX3939) - ULTIMATE AI-POWERED AUTO-INSTALLER
 REM Version: 2.0.0
 REM Created: 2026-01-10
-REM Author: Elektronikx-Center-Matte by Alexander Mathey
+REM Author: Xtreme XA-I KI Elektronikx-Center-Matte Cyber ® By Alexander Mathey
 REM ============================================================================
 
 setlocal EnableDelayedExpansion
@@ -31,7 +31,7 @@ echo ║          Unlock • Root • TWRP • Firmware • Updates            �
 echo ║                                                                ║
 echo ╚════════════════════════════════════════════════════════════════╝
 echo.
-echo Copyright © Elektronikx-Center-Matte by Alexander Mathey
+echo Copyright © Xtreme XA-I KI Elektronikx-Center-Matte Cyber ® By Alexander Mathey
 echo.
 
 REM Check for Administrator privileges

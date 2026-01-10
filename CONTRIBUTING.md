@@ -211,4 +211,4 @@ Feel free to open an issue for questions or discussions!
 
 ---
 
-**Copyright © 2026 Elektronikx-Center-Matte by Alexander Mathey**
+**Copyright © 2026 Xtreme XA-I KI Elektronikx-Center-Matte Cyber ® By Alexander Mathey**
