@@ -2,13 +2,20 @@
 
 ################################################################################
 # REALME C63 - UNIVERSAL AUTOMATED INSTALLER
-# Version: 1.0.0
+# Version: 1.0.1 (Performance Optimized)
 # Created: 2026-01-10
 # Author: Xylop90
 # 
 # This is the main entry point for the entire automated installation system.
 # It automatically detects the OS, installs dependencies, downloads files,
 # generates configurations, and provides a complete one-command setup.
+#
+# PERFORMANCE OPTIMIZATIONS:
+# - Command caching to avoid repeated lookups
+# - Package list caching for faster dependency checks
+# - Parallel downloads for multiple files
+# - Optimized file operations with proper find flags
+# See PERFORMANCE.md for detailed optimization documentation
 ################################################################################
 
 set -euo pipefail
@@ -17,7 +24,7 @@ set -euo pipefail
 # CONFIGURATION & CONSTANTS
 # ============================================================================
 
-declare -r SCRIPT_VERSION="1.0.0"
+declare -r SCRIPT_VERSION="1.0.1"
 declare -r SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 declare -r REPO_URL="https://github.com/Xylop90/Realme-C63"
 declare -r INSTALL_DIR="${INSTALL_DIR:-.}"
@@ -27,7 +34,8 @@ declare -r CACHE_DIR="${INSTALL_DIR}/.cache"
 declare -r BACKUP_DIR="${INSTALL_DIR}/backups"
 declare -r TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S")
 
-# Cache for command checks to avoid repeated lookups
+# Performance optimization: Cache for command checks to avoid repeated lookups
+# This reduces O(n) command lookups to O(1) for subsequent checks
 declare -A COMMAND_CACHE
 
 # Color codes for output
@@ -532,13 +540,23 @@ fetch_installation_files() {
     
     info "Fetching ${#files_to_download[@]} file(s)..."
     
+    # Optimize: Download files in parallel for faster completion
+    local pids=()
     for entry in "${files_to_download[@]}"; do
         IFS='|' read -r url destination <<< "${entry}"
-        if download_file "${url}" "${destination}"; then
-            debug "Successfully processed: $(basename ${destination})"
-        else
-            warning "Failed to process: ${url}"
-        fi
+        (
+            if download_file "${url}" "${destination}"; then
+                debug "Successfully processed: $(basename ${destination})"
+            else
+                warning "Failed to process: ${url}"
+            fi
+        ) &
+        pids+=($!)
+    done
+    
+    # Wait for all downloads to complete
+    for pid in "${pids[@]}"; do
+        wait "$pid"
     done
     
     success "File fetch completed"

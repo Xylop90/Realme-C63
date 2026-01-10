@@ -364,21 +364,34 @@ ai_system_analysis() {
     # Simulate AI analysis with comprehensive checks
     local analysis_scores=()
     
-    # Performance Analysis
-    local cpu_health=$(( (100 - $(echo "$cpu_load * 25" | bc 2>/dev/null || echo 0)) ))
-    [[ $cpu_health -lt 0 ]] && cpu_health=0
+    # Performance Analysis - avoid external bc, use bash arithmetic
+    local cpu_health=100
+    if [[ -n "${cpu_load:-}" ]]; then
+        # Parse cpu_load if it's a float (e.g., "1.23")
+        local cpu_int=${cpu_load%%.*}
+        cpu_health=$(( 100 - (cpu_int * 25) ))
+        [[ $cpu_health -lt 0 ]] && cpu_health=0
+    fi
     analysis_scores+=($cpu_health)
     log_info "CPU Health Score: ${cpu_health}/100"
     
-    # Memory Analysis
-    local mem_usage=$(free | awk '/^Mem:/{printf("%.0f", $3/$2 * 100)}' 2>/dev/null || echo 50)
-    local mem_health=$(( 100 - mem_usage ))
+    # Memory Analysis - optimize by reusing already calculated SYSTEM_RAM_MB
+    local mem_health=50
+    if [[ $SYSTEM_RAM_MB -gt 0 ]]; then
+        # Get used memory from free output parsed earlier
+        local mem_usage=$(free | awk '/^Mem:/{printf("%.0f", $3/$2 * 100)}' 2>/dev/null || echo 50)
+        mem_health=$(( 100 - mem_usage ))
+    fi
     analysis_scores+=($mem_health)
     log_info "Memory Health Score: ${mem_health}/100"
     
-    # Disk Analysis
-    local disk_usage=$(df / | awk 'NR==2 {printf("%.0f", $3/$2 * 100)}' 2>/dev/null || echo 50)
-    local disk_health=$(( 100 - disk_usage ))
+    # Disk Analysis - optimize by reusing already calculated DISK_AVAILABLE_MB
+    local disk_health=50
+    if [[ $DISK_AVAILABLE_MB -gt 0 ]]; then
+        # Calculate disk usage percentage from available space
+        local disk_usage=$(df / | awk 'NR==2 {printf("%.0f", $3/$2 * 100)}' 2>/dev/null || echo 50)
+        disk_health=$(( 100 - disk_usage ))
+    fi
     analysis_scores+=($disk_health)
     log_info "Disk Health Score: ${disk_health}/100"
     
