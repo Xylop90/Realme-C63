@@ -1,0 +1,234 @@
+# Git Ignore - Realme C63 Installation System
+
+# ============================================================================
+# AUTOMATISCH GENERIERTE VERZEICHNISSE
+# ============================================================================
+
+# Arbeitsverzeichnis (Downloads, Tools)
+work/
+!work/.gitkeep
+
+# Log-Dateien
+logs/
+!logs/.gitkeep
+
+# Backup-Dateien
+backup/
+!backup/.gitkeep
+
+# Firmware-Downloads
+firmware/
+!firmware/.gitkeep
+
+# Automatisch generierte Konfiguration
+config/downloads.json
+config/device-mappings.json
+
+# ============================================================================
+# WINDOWS SYSTEM FILES
+# ============================================================================
+
+# Windows Thumbnail Cache
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# ============================================================================
+# DOWNLOADS & ARCHIVES
+# ============================================================================
+
+# Compressed files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.pac
+
+# Except sample configs
+!config/*.example.json
+
+# ============================================================================
+# TEMPORARY FILES
+# ============================================================================
+
+# Temp directories
+temp/
+tmp/
+*.tmp
+*.temp
+
+# Extracted archives
+extracted/
+unpacked/
+
+# ============================================================================
+# LOGS & REPORTS
+# ============================================================================
+
+# All log files
+*.log
+
+# Crash dumps
+*.dmp
+
+# ============================================================================
+# IDE & EDITOR
+# ============================================================================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Notepad++
+*.bak
+
+# ============================================================================
+# POWERSHELL
+# ============================================================================
+
+# PowerShell transcript files
+PowerShell_transcript.*.txt
+
+# ============================================================================
+# TOOLS & EXECUTABLES
+# ============================================================================
+
+# Platform Tools
+adb.exe
+fastboot.exe
+platform-tools/
+
+# SPD Flash Tool
+ResearchDownload.exe
+SPDFlashTool.exe
+spd-flash-tool/
+
+# 7-Zip CLI
+7za.exe
+7zr.exe
+
+# devcon
+devcon.exe
+
+# ============================================================================
+# DRIVERS
+# ============================================================================
+
+# Driver archives
+*driver*.zip
+*driver*.exe
+*.inf
+*.cat
+*.sys
+
+# Extracted drivers
+drivers/
+
+# ============================================================================
+# DOCUMENTATION (auto-generated)
+# ============================================================================
+
+# Auto-generated reports
+docs/INSTALLATION-REPORT.md
+docs/SYSTEM-INFO.md
+docs/SPD-Flash-Guide.html
+
+# ============================================================================
+# NODE & NPM (falls verwendet)
+# ============================================================================
+
+node_modules/
+package-lock.json
+
+# ============================================================================
+# PYTHON (falls verwendet)
+# ============================================================================
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+
+# ============================================================================
+# MACOS (für Entwickler mit Mac)
+# ============================================================================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ============================================================================
+# LINUX (für WSL-Nutzer)
+# ============================================================================
+
+*~
+.directory
+.Trash-*
+
+# ============================================================================
+# SICHERHEIT
+# ============================================================================
+
+# Keine privaten Schlüssel
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Keine Passwörter
+passwords.txt
+credentials.json
+
+# ============================================================================
+# ENTWICKLUNG
+# ============================================================================
+
+# Test-Dateien
+test/
+tests/
+*test*.ps1
+*test*.bat
+
+# Debug-Dateien
+debug/
+*.debug
+
+# ============================================================================
+# CUSTOM
+# ============================================================================
+
+# AutoHotkey generierte Scripts
+*.ahk
+
+# Firmware-spezifische Dateien
+*.ozip
+*.pac
+*.bin
+*.img
+*.dat
+
+# Backup-Archive
+*.backup
+*.old
