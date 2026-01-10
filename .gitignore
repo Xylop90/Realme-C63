@@ -1,0 +1,68 @@
+# Logs
+logs/
+*.log
+install.log
+
+# Temporary files
+temp/
+tmp/
+.cache/
+*.tmp
+*.swp
+*.swo
+*~
+
+# Backups
+backups/
+*.backup
+*.bak
+
+# Build artifacts
+build/
+dist/
+out/
+*.img
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Configuration files with sensitive data
+config/
+*.conf
+!example.conf
+
+# Downloads
+downloads/
+*.apk
+*.bin
+
+# Lock files
+*.lock
+.installation.lock
+.installation_state
+
+# Recovery and ROM files
+*.recovery
+recovery/
+rom/
+tools/
+
+# Device specific files
+*.boot
+*.system
+*.vendor
+*.product
