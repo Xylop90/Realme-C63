@@ -28,8 +28,8 @@
 ## 📋 Voraussetzungen
 
 - **Gerät:** Realme C63
-- **Android Version:** [Version eintragen]
-- **TWRP Recovery:** v[Version]
+- **Android Version:** Android 14 (Realme UI 5.0)
+- **TWRP Recovery:** v3.7.0 oder höher
 - **ADB & Fastboot** auf dem PC installiert
 - **USB-Debugging** aktiviert
 - **Bootloader entsperrt** (Siehe Guide unten)
@@ -74,15 +74,15 @@ Wenn du zur Entwicklung beitragen möchtest:
 
 - **GitHub Issues:** Für Bugs und Feature-Requests
 - **Entwickler:** Alexander Mathey
-- **Elektronikx-Center-Matte:** [Link eintragen]
+- **Elektronikx-Center-Matte:** https://github.com/Xylop90
 
 ---
 
 ## 📜 Lizenz
 
-Dieses Projekt ist lizenziert unter [Lizenz eintragen]
+Dieses Projekt ist lizenziert unter der MIT License.
 
-**Copyright © Elektronikx-Center-Matte by Alexander Mathey**
+**Copyright © 2026 Elektronikx-Center-Matte by Alexander Mathey**
 
 ---
 
