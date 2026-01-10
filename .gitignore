@@ -1,0 +1,94 @@
+# Work directory (runtime files, should not be committed)
+work/
+work/*
+!work/.gitkeep
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Downloaded files and cache
+downloads/
+*.pac
+*.img
+*.zip
+*.tar.gz
+*.tgz
+
+# Extracted files
+extracted/
+
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+python311/
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.stackdump
+
+# PowerShell
+*.ps1.bak
+*.psm1.bak
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Backups
+*.bak
+*.backup
+backups/*.ab
+backups/*.tar
+
+# Sensitive data
+*.key
+*.pem
+*.cer
+*.pfx
+*.p12
+*password*
+*secret*
+credentials.json
+
+# OS specific
+.Spotlight-V100
+.Trashes
+._*
+
+# Test results
+TestResults/
+*.trx
+
+# Reports (except templates)
+work/reports/*
+!work/reports/.gitkeep
+
+# Checkpoints
+work/checkpoints/*
+!work/checkpoints/.gitkeep

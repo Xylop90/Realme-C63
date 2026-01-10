@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "2.0.0",
+  "metadata": {
+    "name": "Xtreme XA-I KI Elektronikx-Center-Matte Cyber ® Ultimate Installer",
+    "description": "AI-Powered Auto-Installer for Realme C63 (RMX3939)",
+    "author": "Xtreme XA-I KI Elektronikx-Center-Matte Cyber ® By Alexander Mathey",
+    "created": "2026-01-10",
+    "license": "MIT"
+  },
+  "device": {
+    "model": "Realme C63",
+    "codename": "RMX3939",
+    "chipset": "Unisoc/Spreadtrum",
+    "architecture": "arm64",
+    "android_version": "14"
+  },
+  "features": {
+    "bootloader_unlock": true,
+    "root": true,
+    "custom_recovery": true,
+    "firmware_flash": true,
+    "auto_update": true,
+    "backup_restore": true,
+    "driver_install": true
+  },
+  "installation": {
+    "working_directory": "work",
+    "download_directory": "work/downloads",
+    "extracted_directory": "work/extracted",
+    "backup_directory": "work/backups",
+    "log_directory": "work/logs",
+    "report_directory": "work/reports",
+    "checkpoint_directory": "work/checkpoints",
+    "max_retries": 3,
+    "timeout_seconds": 300,
+    "auto_resume": true,
+    "verify_downloads": true,
+    "create_backups": true
+  },
+  "security": {
+    "verify_sha256": true,
+    "https_only": true,
+    "verify_signatures": true,
+    "sandbox_mode": false
+  },
+  "ui": {
+    "language": "de",
+    "fallback_language": "en",
+    "show_progress": true,
+    "colored_output": true,
+    "verbose_logging": false,
+    "interactive_mode": true
+  },
+  "performance": {
+    "parallel_downloads": 3,
+    "download_chunk_size_mb": 10,
+    "use_bits_transfer": true,
+    "enable_compression": true
+  },
+  "update": {
+    "check_on_start": true,
+    "auto_update": false,
+    "update_channel": "stable",
+    "github_repo": "Xylop90/Realme-C63"
+  }
+}

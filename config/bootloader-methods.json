@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "device": "RMX3939",
+  "chipset": "Unisoc/Spreadtrum",
+  "last_updated": "2026-01-10",
+  "methods": [
+    {
+      "id": "unisoc_unlock",
+      "name": "Unisoc Python Tool",
+      "priority": 1,
+      "type": "software",
+      "active": true,
+      "recommended": true,
+      "description": "Primary method using unisoc-unlock Python tool",
+      "requirements": {
+        "tools": ["python", "adb", "fastboot"],
+        "packages": ["unisoc-unlock"],
+        "system": ["Windows 10+", "Administrator rights"]
+      },
+      "steps": [
+        {
+          "step": 1,
+          "action": "install_python",
+          "description": "Install Python 3.11 Embedded"
+        },
+        {
+          "step": 2,
+          "action": "install_pip_package",
+          "description": "Install unisoc-unlock via pip",
+          "command": "python -m pip install unisoc-unlock"
+        },
+        {
+          "step": 3,
+          "action": "reboot_bootloader",
+          "description": "Reboot device to bootloader",
+          "command": "adb reboot bootloader"
+        },
+        {
+          "step": 4,
+          "action": "unlock_bootloader",
+          "description": "Execute unlock command",
+          "command": "python -m unisoc_unlock unlock"
+        },
+        {
+          "step": 5,
+          "action": "verify_unlock",
+          "description": "Verify bootloader is unlocked"
+        }
+      ],
+      "advantages": [
+        "No DeepTesting app required",
+        "Uses identifier token method",
+        "Works directly with Unisoc chipset",
+        "No testpoint needed"
+      ],
+      "references": [
+        "https://github.com/patrislav1/unisoc-unlock",
+        "https://pypi.org/project/unisoc-unlock/"
+      ],
+      "success_rate": 95,
+      "estimated_time_minutes": 5
+    },
+    {
+      "id": "cve_2022_38694",
+      "name": "CVE-2022-38694 Exploit",
+      "priority": 2,
+      "type": "exploit",
+      "active": true,
+      "recommended": false,
+      "description": "Fallback method using CVE-2022-38694 vulnerability",
+      "requirements": {
+        "tools": ["adb", "fastboot"],
+        "packages": [],
+        "system": ["Windows 10+", "Administrator rights"]
+      },
+      "steps": [
+        {
+          "step": 1,
+          "action": "download_exploit",
+          "description": "Download CVE-2022-38694 exploit tools"
+        },
+        {
+          "step": 2,
+          "action": "enable_usb_debugging",
+          "description": "Ensure USB debugging is enabled"
+        },
+        {
+          "step": 3,
+          "action": "connect_device",
+          "description": "Connect device via USB"
+        },
+        {
+          "step": 4,
+          "action": "run_exploit",
+          "description": "Execute exploit script"
+        },
+        {
+          "step": 5,
+          "action": "verify_unlock",
+          "description": "Verify bootloader is unlocked"
+        }
+      ],
+      "advantages": [
+        "No testpoint required",
+        "Compatible with UMS9320 devices",
+        "Works on similar Realme models"
+      ],
+      "warnings": [
+        "Uses security vulnerability",
+        "May not work on patched firmware",
+        "Requires careful execution"
+      ],
+      "compatible_devices": ["RMX3930", "RMX3830", "RMX3939"],
+      "references": [
+        "https://xdaforums.com/t/guide-how-to-unlock-bootloader-realme-c61-rmx3930-realme-c51-rmx3830-or-other-ums9320-devices-via-cve-2022-38694-no-testpoint.4749566/"
+      ],
+      "success_rate": 80,
+      "estimated_time_minutes": 15
+    },
+    {
+      "id": "deeptesting_app",
+      "name": "Official DeepTesting App",
+      "priority": 3,
+      "type": "official",
+      "active": true,
+      "recommended": false,
+      "description": "Official Realme method using DeepTesting app",
+      "requirements": {
+        "tools": ["adb"],
+        "packages": ["DeepTesting.apk"],
+        "system": ["Any Windows version"]
+      },
+      "steps": [
+        {
+          "step": 1,
+          "action": "check_availability",
+          "description": "Check if DeepTesting app is available for device"
+        },
+        {
+          "step": 2,
+          "action": "download_app",
+          "description": "Download DeepTesting APK"
+        },
+        {
+          "step": 3,
+          "action": "install_app",
+          "description": "Install app on device",
+          "command": "adb install DeepTesting.apk"
+        },
+        {
+          "step": 4,
+          "action": "request_unlock",
+          "description": "Request unlock code via app"
+        },
+        {
+          "step": 5,
+          "action": "apply_unlock",
+          "description": "Apply unlock code to device"
+        },
+        {
+          "step": 6,
+          "action": "verify_unlock",
+          "description": "Verify bootloader is unlocked"
+        }
+      ],
+      "advantages": [
+        "Official method",
+        "Safer approach",
+        "Supported by manufacturer"
+      ],
+      "warnings": [
+        "Often not available for new devices",
+        "May require waiting period",
+        "Can be discontinued without notice"
+      ],
+      "references": [
+        "https://www.getdroidtips.com/unlock-bootloader-realme/",
+        "https://droidwin.com/unlock-bootloader-realme-device/",
+        "https://www.gizdev.com/how-to-unlock-realme-phones-bootloader/"
+      ],
+      "success_rate": 60,
+      "estimated_time_minutes": 30
+    }
+  ],
+  "alternative_methods": [
+    {
+      "id": "cheetah_tool",
+      "name": "Cheetah Tool Pro",
+      "type": "commercial",
+      "description": "Professional tool for bootloader unlock",
+      "reference": "https://www.hovatek.com/forum/thread-48896.html",
+      "cost": "paid"
+    },
+    {
+      "id": "mtk_client",
+      "name": "MTK Client",
+      "type": "software",
+      "description": "For MediaTek devices only (not applicable)",
+      "applicable": false
+    }
+  ],
+  "fallback_strategy": {
+    "enabled": true,
+    "retry_on_failure": true,
+    "max_attempts_per_method": 3,
+    "auto_fallback": true,
+    "fallback_sequence": ["unisoc_unlock", "cve_2022_38694", "deeptesting_app"]
+  },
+  "warnings": {
+    "data_loss": "Unlocking bootloader will ERASE ALL DATA",
+    "warranty": "May void device warranty",
+    "security": "Reduces device security features",
+    "backup": "Create backup before proceeding"
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "device": "RMX3939",
+  "last_updated": "2026-01-10",
+  "sources": [
+    {
+      "id": "getdroidtips",
+      "name": "GetDroidTips",
+      "url": "https://www.getdroidtips.com/realme-c63-firmware/",
+      "priority": 1,
+      "type": "web_scraping",
+      "active": true,
+      "description": "Primary firmware source with latest updates",
+      "supported_formats": ["zip", "pac"],
+      "verification": {
+        "provides_hash": true,
+        "hash_algorithm": "sha256"
+      }
+    },
+    {
+      "id": "gsmmafia",
+      "name": "GSMMAFIA",
+      "url": "https://gsmmafia.com/realme-c63-rmx3939-flash-file/",
+      "priority": 2,
+      "type": "web_scraping",
+      "active": true,
+      "description": "Reliable firmware database with multiple versions",
+      "supported_formats": ["zip", "pac", "img"],
+      "verification": {
+        "provides_hash": true,
+        "hash_algorithm": "md5"
+      }
+    },
+    {
+      "id": "realmefirmware",
+      "name": "RealmeFirmware",
+      "url": "https://realmefirmware.com/realme-c63-4g-firmware/",
+      "priority": 3,
+      "type": "web_scraping",
+      "active": true,
+      "description": "Official firmware repository",
+      "supported_formats": ["zip", "pac"],
+      "verification": {
+        "provides_hash": true,
+        "hash_algorithm": "sha256"
+      }
+    },
+    {
+      "id": "romprovider",
+      "name": "ROMProvider",
+      "url": "https://romprovider.com/realme-c63-rmx3939-flash-file-stock-rom/",
+      "priority": 4,
+      "type": "web_scraping",
+      "active": true,
+      "description": "ROM provider with stock firmware collection",
+      "supported_formats": ["zip", "pac"],
+      "verification": {
+        "provides_hash": false,
+        "hash_algorithm": null
+      }
+    },
+    {
+      "id": "filewale",
+      "name": "Filewale",
+      "url": "https://filewale.com/files/realme-c63-rmx3939export-14-a77-2025050920403600-project-id-24666-24667-24668zip/34003",
+      "priority": 5,
+      "type": "direct_download",
+      "active": true,
+      "description": "Firmware archive with specific versions",
+      "supported_formats": ["zip"],
+      "verification": {
+        "provides_hash": false,
+        "hash_algorithm": null
+      }
+    }
+  ],
+  "known_versions": [
+    {
+      "version": "RMX3939export_14_A.77_2025050920403600",
+      "android_version": "14",
+      "release_date": "2025-05-09",
+      "file_size_mb": 3200,
+      "recommended": true,
+      "tested": true
+    },
+    {
+      "version": "RMX3939export_14_A.54_2024110821200000",
+      "android_version": "14",
+      "release_date": "2024-11-08",
+      "file_size_mb": 3100,
+      "recommended": false,
+      "tested": true
+    },
+    {
+      "version": "RMX3939export_14_A.27_2024060517400000",
+      "android_version": "14",
+      "release_date": "2024-06-05",
+      "file_size_mb": 3000,
+      "recommended": false,
+      "tested": true
+    }
+  ]
+}
