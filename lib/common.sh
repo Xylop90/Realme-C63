@@ -22,28 +22,38 @@ readonly NC='\033[0m' # No Color
 
 log_info() {
     echo -e "${BLUE}[INFO]${NC} $*"
-    [[ -n "${LOG_FILE:-}" ]] && echo "[$(date +'%Y-%m-%d %H:%M:%S')] [INFO] $*" >> "${LOG_FILE}"
+    if [[ -n "${LOG_FILE:-}" ]]; then
+        echo "[$(date +'%Y-%m-%d %H:%M:%S')] [INFO] $*" >> "${LOG_FILE}" || true
+    fi
 }
 
 log_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $*"
-    [[ -n "${LOG_FILE:-}" ]] && echo "[$(date +'%Y-%m-%d %H:%M:%S')] [SUCCESS] $*" >> "${LOG_FILE}"
+    if [[ -n "${LOG_FILE:-}" ]]; then
+        echo "[$(date +'%Y-%m-%d %H:%M:%S')] [SUCCESS] $*" >> "${LOG_FILE}" || true
+    fi
 }
 
 log_warning() {
     echo -e "${YELLOW}[WARNING]${NC} $*"
-    [[ -n "${LOG_FILE:-}" ]] && echo "[$(date +'%Y-%m-%d %H:%M:%S')] [WARNING] $*" >> "${LOG_FILE}"
+    if [[ -n "${LOG_FILE:-}" ]]; then
+        echo "[$(date +'%Y-%m-%d %H:%M:%S')] [WARNING] $*" >> "${LOG_FILE}" || true
+    fi
 }
 
 log_error() {
     echo -e "${RED}[ERROR]${NC} $*" >&2
-    [[ -n "${LOG_FILE:-}" ]] && echo "[$(date +'%Y-%m-%d %H:%M:%S')] [ERROR] $*" >> "${LOG_FILE}"
+    if [[ -n "${LOG_FILE:-}" ]]; then
+        echo "[$(date +'%Y-%m-%d %H:%M:%S')] [ERROR] $*" >> "${LOG_FILE}" || true
+    fi
 }
 
 log_debug() {
     if [[ "${DEBUG:-false}" == true ]]; then
         echo -e "${CYAN}[DEBUG]${NC} $*"
-        [[ -n "${LOG_FILE:-}" ]] && echo "[$(date +'%Y-%m-%d %H:%M:%S')] [DEBUG] $*" >> "${LOG_FILE}"
+        if [[ -n "${LOG_FILE:-}" ]]; then
+            echo "[$(date +'%Y-%m-%d %H:%M:%S')] [DEBUG] $*" >> "${LOG_FILE}" || true
+        fi
     fi
 }
 
@@ -294,8 +304,9 @@ trap_errors() {
     log_error "Error at line ${line_number}: ${command}"
 }
 
-# Set error trap
-trap 'trap_errors ${LINENO} "${BASH_COMMAND}"' ERR
+# Note: Error trap can be enabled by scripts that source this library
+# by calling: trap 'trap_errors ${LINENO} "${BASH_COMMAND}"' ERR
+# Not enabled by default to avoid false positives in conditional checks
 
 # ============================================================================
 # Export Functions (if needed by other scripts)
