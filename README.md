@@ -109,7 +109,7 @@ Wenn du zur Entwicklung beitragen möchtest:
 
 - **GitHub Issues:** Für Bugs und Feature-Requests
 - **Entwickler:** Alexander Mathey
-- **Elektronikx-Center-Matte:** [Link eintragen]
+- **Elektronikx-Center-Matte:** https://github.com/Xylop90/Realme-C63
 
 ### 📚 Dokumentation & Guides
 - [Bootloader Unlock Guide](docs/BOOTLOADER_UNLOCK.md) - Realme C63 (RMX3939)
@@ -128,7 +128,7 @@ Wenn du zur Entwicklung beitragen möchtest:
 
 ## 📜 Lizenz
 
-Dieses Projekt ist lizenziert unter [Lizenz eintragen]
+Dieses Projekt ist lizenziert unter der [MIT License](LICENSE)
 
 **Copyright © Elektronikx-Center-Matte by Alexander Mathey**
 
